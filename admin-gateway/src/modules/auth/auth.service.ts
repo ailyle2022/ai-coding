@@ -21,10 +21,16 @@ export class AuthService {
       const authPayload = new AuthPayload();
       authPayload.token = token;
       authPayload.user = user;
+      authPayload.isSuccess = true;
       
       return authPayload;
     }
     
-    throw new Error('Invalid credentials');
+    // 登录失败时不抛出异常，而是返回失败信息
+    const authPayload = new AuthPayload();
+    authPayload.isSuccess = false;
+    authPayload.message = 'Invalid credentials';
+    
+    return authPayload;
   }
 }

@@ -8,7 +8,9 @@ export const typeDefs = gql`
 
   type AuthPayload {
     token: String!
-    user: User!
+    user: User
+    isSuccess: Boolean!
+    message: String
   }
 
   input LoginInput {

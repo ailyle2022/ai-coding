@@ -14,6 +14,12 @@ export class AuthPayload {
   @Field()
   token: string;
 
-  @Field(() => AuthUser)
+  @Field(() => AuthUser, { nullable: true })
   user: AuthUser;
+
+  @Field()
+  isSuccess: boolean;
+
+  @Field({ nullable: true })
+  message: string;
 }

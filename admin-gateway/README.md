@@ -24,7 +24,40 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository with GraphQL authentication module.
+
+## Authentication Module
+
+This project includes a GraphQL-based authentication module with the following features:
+
+- User login mutation with username/password
+- JWT token generation upon successful authentication
+- GraphQL Playground for testing queries and mutations
+- Structured error handling without throwing exceptions
+
+### Recent Changes
+
+- Updated login failure handling to return structured response instead of throwing errors
+- Added `isSuccess` and `message` fields to authentication response
+- Fixed GraphQL schema validation by adding required root Query type
+- Resolved missing package dependencies for GraphQL integration
+
+## System Requirements
+
+### Node.js Version
+
+This project requires Node.js version 18 or higher. Some dependencies (like `@as-integrations/express5`) recommend Node.js version 20 or higher for optimal performance and compatibility.
+
+To check your Node.js version:
+```bash
+node --version
+```
+
+To upgrade Node.js, consider using a version manager like `nvm`:
+```bash
+nvm install 20
+nvm use 20
+```
 
 ## Project setup
 
@@ -44,6 +77,51 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+## GraphQL Playground
+
+After starting the application, you can access the GraphQL Playground at:
+- http://localhost:3000/graphql
+
+Example login mutation:
+```graphql
+mutation {
+  login(input: {username: "admin", password: "admin"}) {
+    isSuccess
+    message
+    token
+    user {
+      id
+      username
+    }
+  }
+}
+
+# Example of failed login attempt:
+mutation {
+  login(input: {username: "wrong", password: "credentials"}) {
+    isSuccess
+    message
+    token
+    user {
+      id
+      username
+    }
+  }
+}
+```
+
+## Error Handling Approach
+
+This project follows best practices for API error handling:
+
+- Expected business errors (like login failures) do not throw exceptions
+- Instead, they return structured response objects with:
+  - `isSuccess`: Boolean flag indicating operation success
+  - `message`: Optional error description for failed operations
+  - Data fields populated appropriately based on success/failure state
+
+This approach allows frontend clients to handle both success and failure cases gracefully without needing to catch exceptions.
 
 ## Run tests
 
