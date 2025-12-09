@@ -1,9 +1,14 @@
 <template>
-  <div id="app" class="flex h-full">
-    <Sidebar />
-    <main class="flex-grow p-8 custom-scrollbar overflow-y-auto bg-gray-50">
+  <div id="app" class="h-full">
+    <div v-if="$route.meta.layout === 'without-sidebar'" class="h-full">
       <router-view />
-    </main>
+    </div>
+    <div v-else class="flex h-full">
+      <Sidebar />
+      <main class="flex-grow p-8 custom-scrollbar overflow-y-auto bg-gray-50">
+        <router-view />
+      </main>
+    </div>
   </div>
 </template>
 

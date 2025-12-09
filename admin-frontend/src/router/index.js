@@ -3,23 +3,29 @@ import HomeView from '../views/Home.vue'
 import LoginView from '../views/Login.vue'
 import UserListView from '../views/UserList.vue'
 
+// 不包含侧边栏的App组件
+import { defineAsyncComponent } from 'vue'
+const AppWithoutSidebar = defineAsyncComponent(() => import('../AppWithoutSidebar.vue'))
+const AppWithSidebar = defineAsyncComponent(() => import('../App.vue'))
+
 const routes = [
   {
     path: '/',
     name: 'home',
     component: HomeView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, layout: 'with-sidebar' }
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: LoginView,
+    meta: { layout: 'without-sidebar' }
   },
   {
     path: '/users',
     name: 'users',
     component: UserListView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, layout: 'with-sidebar' }
   },
   {
     path: '/home',
