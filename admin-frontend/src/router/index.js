@@ -1,36 +1,33 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../views/Login.vue';
-import Home from '../views/Home.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/Home.vue'
+import LoginView from '../views/Login.vue'
+import UserListView from '../views/UserList.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    name: 'home',
+    component: HomeView
   },
   {
     path: '/login',
-    name: 'Login',
-    component: Login
+    name: 'login',
+    component: LoginView
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: UserListView
   },
   {
     path: '/home',
-    name: 'Home',
-    component: Home,
-    beforeEnter: (to, from, next) => {
-      // 检查是否有认证token
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        next(); // 允许访问
-      } else {
-        next('/login'); // 重定向到登录页
-      }
-    }
+    redirect: '/'
   }
-];
+]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes
-});
+})
 
-export default router;
+export default router

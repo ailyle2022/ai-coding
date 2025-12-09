@@ -4,6 +4,12 @@ export const typeDefs = gql`
   type User {
     id: Int!
     username: String!
+    email: String
+    firstName: String
+    lastName: String
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type AuthPayload {
@@ -19,7 +25,8 @@ export const typeDefs = gql`
   }
 
   type Query {
-    _: Boolean
+    users: [User!]!
+    user(id: Int!): User
   }
 
   type Mutation {

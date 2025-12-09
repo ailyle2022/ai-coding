@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
@@ -56,6 +56,44 @@ export class AuthService {
       authPayload.message = 'Internal server error';
       return authPayload;
     }
+  }
+
+  /**
+   * 查询所有用户
+   * @returns 用户列表
+   */
+  async findAllUsers(): Promise<User[]> {
+    return await this.userRepository.find({
+      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt', 'updatedAt'],
+      order: { id: 'ASC' }
+    });
+  }
+
+  /**
+   * 根据ID查询用户
+   * @param id 用户ID
+   * @returns 用户信息
+   */
+  async findUserById(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt', 'updatedAt']
+    });
+    
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    
+    return user;
+  }
+
+  /**
+   * 用于生成密码哈希的方法，供后续注册新用户时使用
+   * @param password 明文密码
+   * @returns 哈希后的密码
+   */
+  async hashPasswordForStorage(password: string): Promise<string> {
+    return await this.passwordService.hashPassword(password);
   }
 
   private generateToken(user: User): string {

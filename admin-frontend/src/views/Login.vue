@@ -41,7 +41,7 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
-  name: 'LoginPage',
+  name: 'LoginView',
   setup() {
     const router = useRouter()
     
