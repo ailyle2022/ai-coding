@@ -23,7 +23,9 @@
             required
           />
         </div>
-        <button type="submit" class="login-button">登录</button>
+        <button type="submit" class="login-button" :disabled="loading">
+          {{ loading ? '登录中...' : '登录' }}
+        </button>
       </form>
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
@@ -33,61 +35,89 @@
 </template>
 
 <script>
+import { gql } from 'graphql-tag'
+import { useMutation } from '@vue/apollo-composable'
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+
 export default {
   name: 'LoginPage',
-  data() {
-    return {
-      loginForm: {
-        username: '',
-        password: ''
-      },
-      errorMessage: ''
-    };
-  },
-  methods: {
-    async handleLogin() {
+  setup() {
+    const router = useRouter()
+    
+    const loginForm = reactive({
+      username: '',
+      password: ''
+    })
+    
+    const errorMessage = ref('')
+    const loading = ref(false)
+    
+    // 定义登录mutation
+    const LOGIN_MUTATION = gql`
+      mutation Login($input: LoginInput!) {
+        login(input: $input) {
+          token
+          user {
+            id
+            username
+          }
+          isSuccess
+          message
+        }
+      }
+    `
+    
+    const { mutate: login, loading: loginLoading, onError } = useMutation(LOGIN_MUTATION)
+    
+    // 监听登录错误
+    onError((error) => {
+      errorMessage.value = error.message || '网络错误，请稍后重试'
+      loading.value = false
+    })
+    
+    const handleLogin = async () => {
+      if (!loginForm.username || !loginForm.password) {
+        errorMessage.value = '请填写用户名和密码'
+        return
+      }
+      
+      loading.value = true
+      errorMessage.value = ''
+      
       try {
-        // 这里应该调用真实的API，暂时使用模拟数据
-        const response = await this.mockLogin(this.loginForm);
+        const result = await login({
+          input: {
+            username: loginForm.username,
+            password: loginForm.password
+          }
+        })
         
-        if (response.isSuccess) {
+        loading.value = false
+        
+        if (result.data.login.isSuccess) {
           // 登录成功，保存token并跳转到首页
-          localStorage.setItem('authToken', response.token);
-          localStorage.setItem('user', JSON.stringify(response.user));
-          this.$router.push('/home');
+          localStorage.setItem('authToken', result.data.login.token)
+          localStorage.setItem('user', JSON.stringify(result.data.login.user))
+          router.push('/home')
         } else {
           // 登录失败，显示错误信息
-          this.errorMessage = response.message || '登录失败';
+          errorMessage.value = result.data.login.message || '登录失败'
         }
       } catch (error) {
-        this.errorMessage = '网络错误，请稍后重试';
+        loading.value = false
+        errorMessage.value = error.message || '网络错误，请稍后重试'
       }
-    },
+    }
     
-    // 模拟登录API调用
-    mockLogin(credentials) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          if (credentials.username === 'admin' && credentials.password === 'admin') {
-            resolve({
-              isSuccess: true,
-              token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.5fF9f2vYHQVyzmy6K0sJiMS7qNgqMV7w',
-              user: {
-                id: 1,
-                username: 'admin'
-              }
-            });
-          } else {
-            resolve({
-              isSuccess: false,
-              message: '用户名或密码错误'
-            });
-          }
-        }, 1000);
-      });
+    return {
+      loginForm,
+      errorMessage,
+      loading: loginLoading,
+      handleLogin
     }
   }
-};
+}
 </script>
 
 <style scoped>
@@ -150,8 +180,13 @@ export default {
   cursor: pointer;
 }
 
-.login-button:hover {
+.login-button:hover:not(:disabled) {
   background-color: #337ecc;
+}
+
+.login-button:disabled {
+  background-color: #a0cfff;
+  cursor: not-allowed;
 }
 
 .error-message {
