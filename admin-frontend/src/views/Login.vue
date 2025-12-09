@@ -1,33 +1,46 @@
 <template>
-  <div class="login-container">
-    <div class="login-form">
-      <h2>管理员登录</h2>
-      <form @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label for="username">用户名:</label>
+  <div class="login-container flex items-center justify-center min-h-screen bg-gray-50">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900">管理员登录</h2>
+        <p class="text-gray-500 mt-2">请输入您的账号和密码</p>
+      </div>
+      
+      <form @submit.prevent="handleLogin" class="space-y-6">
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
           <input 
             id="username" 
             v-model="loginForm.username" 
             type="text" 
             placeholder="请输入用户名" 
             required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-accent focus:border-primary-accent transition duration-150"
           />
         </div>
-        <div class="form-group">
-          <label for="password">密码:</label>
+        
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
           <input 
             id="password" 
             v-model="loginForm.password" 
             type="password" 
             placeholder="请输入密码" 
             required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-accent focus:border-primary-accent transition duration-150"
           />
         </div>
-        <button type="submit" class="login-button" :disabled="loading">
+        
+        <button 
+          type="submit" 
+          class="w-full py-2 bg-primary-accent hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-150 shadow-md"
+          :disabled="loading"
+        >
           {{ loading ? '登录中...' : '登录' }}
         </button>
       </form>
-      <div v-if="errorMessage" class="error-message">
+      
+      <div v-if="errorMessage" class="mt-6 p-4 bg-red-50 text-red-700 rounded-lg">
         {{ errorMessage }}
       </div>
     </div>
@@ -37,7 +50,7 @@
 <script>
 import { gql } from 'graphql-tag'
 import { useMutation } from '@vue/apollo-composable'
-import { ref, reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -99,7 +112,7 @@ export default {
           // 登录成功，保存token并跳转到首页
           localStorage.setItem('authToken', result.data.login.token)
           localStorage.setItem('user', JSON.stringify(result.data.login.user))
-          router.push('/home')
+          router.push('/')
         } else {
           // 登录失败，显示错误信息
           errorMessage.value = result.data.login.message || '登录失败'
@@ -121,81 +134,5 @@ export default {
 </script>
 
 <style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
-}
-
-.login-form {
-  width: 100%;
-  max-width: 400px;
-  padding: 40px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.login-form h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #555;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-.form-group input:focus {
-  border-color: #409eff;
-  outline: none;
-}
-
-.login-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #409eff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.login-button:hover:not(:disabled) {
-  background-color: #337ecc;
-}
-
-.login-button:disabled {
-  background-color: #a0cfff;
-  cursor: not-allowed;
-}
-
-.error-message {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #fef0f0;
-  color: #f56c6c;
-  border: 1px solid #fde2e2;
-  border-radius: 4px;
-  text-align: center;
-}
+/* 所有样式已通过Tailwind CSS类实现 */
 </style>

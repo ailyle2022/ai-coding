@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简约管理后台</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置 Tailwind 以使用 Inter 字体和自定义主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-accent': '#2563EB', // 蓝色作为主色
+                        'secondary-bg': '#F9FAFB', // 浅灰色作为辅助背景
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 隐藏滚动条，保持简约 */
+        body {
+            overflow: hidden;
+            font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        /* 自定义滚动条样式 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #d1d5db; /* gray-300 */
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 h-screen antialiased">
+
+    <div id="app" class="flex h-full">
+
+        <!-- 1. 左侧导航栏 (Sidebar) -->
+        <nav class="w-64 bg-white shadow-xl flex-shrink-0 flex flex-col border-r border-gray-100">
+            <!-- Logo/应用名称 -->
+            <div class="h-20 flex items-center justify-center border-b border-gray-100">
+                <h1 class="text-2xl font-bold text-primary-accent">极简 Admin</h1>
+            </div>
+
+            <!-- 导航链接 -->
+            <div class="p-4 flex-grow custom-scrollbar overflow-y-auto">
+                <p class="text-xs font-semibold uppercase text-gray-400 mb-3 ml-3">系统管理</p>
+                <ul>
+                    <!-- 用户管理 -->
+                    <li>
+                        <a href="#" data-view="users" class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M5 12h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2zM9 10a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                            <span class="font-medium">用户管理</span>
+                        </a>
+                    </li>
+                    <!-- 角色管理 -->
+                    <li>
+                        <a href="#" data-view="roles" class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out mt-1">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            <span class="font-medium">角色管理</span>
+                        </a>
+                    </li>
+                    <!-- 占位符 -->
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-xl text-gray-500 hover:bg-gray-100 transition duration-150 ease-in-out mt-1">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            <span class="font-medium">日志查看</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- 底部用户/版本信息 (Placeholder) -->
+            <div class="p-4 border-t border-gray-100">
+                <div class="flex items-center text-sm text-gray-500">
+                    <div class="w-8 h-8 bg-gray-200 rounded-full mr-3"></div>
+                    <div>
+                        <p class="font-semibold text-gray-700">超级管理员</p>
+                        <p class="text-xs">Version 1.0</p>
+                    </div>
+                </div>
+            </div>
+
+        </nav>
+
+        <!-- 2. 主内容区域 (Main Content) -->
+        <main id="main-content" class="flex-grow p-8 custom-scrollbar overflow-y-auto">
+            <!-- 内容将通过 JavaScript 动态加载到这里 -->
+        </main>
+    </div>
+
+    <script>
+        // 核心 DOM 元素
+        const mainContent = document.getElementById('main-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+        let currentView = 'users'; // 默认视图
+
+        // 视图渲染函数
+        const views = {
+            'users': {
+                title: '用户管理',
+                content: `
+                    <!-- 用户管理内容 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="text-gray-400 font-medium text-sm">共 12 位用户</div>
+                            <div class="flex space-x-3">
+                                <div class="relative">
+                                    <input type="text" placeholder="搜索 用户名/邮箱..." class="px-4 py-2 border border-gray-300 rounded-xl w-64 focus:ring-primary-accent focus:border-primary-accent transition duration-150">
+                                    <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <button onclick="alert('TODO: 打开新增用户侧边栏')" class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md">
+                                    + 新增用户
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 列表表格 -->
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">用户名</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${generateUserRows()}
+                            </tbody>
+                        </table>
+                        
+                        <!-- 分页占位符 -->
+                        <div class="mt-6 flex justify-end items-center text-sm text-gray-600">
+                            <button class="p-2 mr-2 rounded-lg hover:bg-gray-100">&lt; 上一页</button>
+                            <span class="mx-2">第 1 页 / 共 2 页</span>
+                            <button class="p-2 ml-2 rounded-lg hover:bg-gray-100">下一页 &gt;</button>
+                        </div>
+                    </div>
+                `
+            },
+            'roles': {
+                title: '角色管理',
+                content: `
+                    <!-- 角色管理内容 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="text-gray-400 font-medium text-sm">共 4 个角色</div>
+                            <button onclick="alert('TODO: 打开新增角色权限配置')" class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md">
+                                + 新增角色
+                            </button>
+                        </div>
+
+                        <!-- 列表表格 -->
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl w-1/4">角色名称</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色描述</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户数量</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl w-1/5">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${generateRoleRows()}
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            }
+        };
+
+        // 模拟用户数据生成
+        function generateUserRows() {
+            const users = [
+                { name: 'Admin', email: 'admin@corp.com', role: '超级管理员', status: 'Active' },
+                { name: 'EditorA', email: 'editor.a@corp.com', role: '内容编辑', status: 'Active' },
+                { name: 'ViewerB', email: 'viewer.b@corp.com', role: '只读用户', status: 'Inactive' },
+                { name: 'TesterC', email: 'tester.c@corp.com', role: '测试员', status: 'Active' },
+            ];
+
+            return users.map(user => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${user.role}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${user.status === 'Active' ? '启用' : '禁用'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="alert('TODO: 编辑用户 ${user.name}')" class="text-primary-accent hover:text-blue-900 mr-4">编辑</button>
+                        <button onclick="alert('TODO: 删除用户 ${user.name}')" class="text-red-500 hover:text-red-700">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 模拟角色数据生成
+        function generateRoleRows() {
+            const roles = [
+                { name: '超级管理员', description: '拥有所有权限', users: 1 },
+                { name: '内容编辑', description: '管理内容，发布文章，无系统设置权限', users: 5 },
+                { name: '只读用户', description: '仅限查看数据报表', users: 6 },
+                { name: '测试员', description: '仅能访问开发/测试环境，无生产权限', users: 3 },
+            ];
+
+            return roles.map(role => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${role.name}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">${role.description}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${role.users}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="alert('TODO: 编辑角色 ${role.name} 的权限')" class="text-primary-accent hover:text-blue-900 mr-4">编辑权限</button>
+                        <button onclick="alert('TODO: 删除角色 ${role.name}')" class="text-red-500 hover:text-red-700">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 渲染指定视图
+        function renderView(viewName) {
+            const view = views[viewName];
+            if (!view) return;
+
+            // 1. 更新主内容
+            mainContent.innerHTML = `
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-8">${view.title}</h2>
+                ${view.content}
+            `;
+
+            // 2. 更新导航栏高亮状态
+            navLinks.forEach(link => {
+                link.classList.remove('bg-secondary-bg', 'text-primary-accent', 'font-semibold');
+                link.classList.add('text-gray-500', 'hover:bg-gray-100');
+            });
+
+            const activeLink = document.querySelector(`[data-view="${viewName}"]`);
+            if (activeLink) {
+                activeLink.classList.add('bg-secondary-bg', 'text-primary-accent', 'font-semibold');
+                activeLink.classList.remove('text-gray-500', 'hover:bg-gray-100');
+            }
+            
+            currentView = viewName;
+        }
+
+        // 导航链接点击事件
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewName = e.currentTarget.getAttribute('data-view');
+                if (viewName) {
+                    renderView(viewName);
+                }
+            });
+        });
+
+        // 页面加载完成后，默认加载用户管理视图
+        document.addEventListener('DOMContentLoaded', () => {
+            renderView(currentView);
+        });
+
+        // 替换 alert 为自定义模态框/通知 (由于环境限制，此处仍使用 alert 作为占位符)
+        // 在真实项目中，应使用如下模式：
+        /*
+        function showNotification(message, type = 'info') {
+            // 在页面顶部显示一个 Toast 通知
+            console.log(\`[Notification \${type.toUpperCase()}]: \${message}\`);
+        }
+        window.alert = showNotification; // 仅为演示目的
+        */
+    </script>
+</body>
+</html>

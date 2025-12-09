@@ -6,6 +6,42 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 配置 Tailwind 以使用 Inter 字体和自定义主题 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+            },
+            colors: {
+              'primary-accent': '#2563EB', // 蓝色作为主色
+              'secondary-bg': '#F9FAFB', // 浅灰色作为辅助背景
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* 隐藏滚动条，保持简约 */
+      body {
+        overflow: hidden;
+        font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      }
+      /* 自定义滚动条样式 */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #d1d5db; /* gray-300 */
+        border-radius: 3px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+    </style>
   </head>
   <body>
     <noscript>

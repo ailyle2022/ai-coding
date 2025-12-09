@@ -1,73 +1,82 @@
 <template>
   <div class="home">
-    <div class="header">
-      <h1>管理员后台</h1>
-      <nav class="navigation">
-        <router-link to="/">首页</router-link>
-        <router-link to="/users">用户管理</router-link>
-        <a href="#" @click="logout">退出登录</a>
-      </nav>
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-6">仪表盘</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+          <div class="text-blue-800 text-3xl font-bold mb-2">12</div>
+          <div class="text-blue-600 font-medium">总用户数</div>
+        </div>
+        
+        <div class="bg-green-50 p-6 rounded-xl border border-green-100">
+          <div class="text-green-800 text-3xl font-bold mb-2">8</div>
+          <div class="text-green-600 font-medium">在线用户</div>
+        </div>
+        
+        <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
+          <div class="text-purple-800 text-3xl font-bold mb-2">4</div>
+          <div class="text-purple-600 font-medium">用户角色</div>
+        </div>
+      </div>
+      
+      <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">最近活动</h3>
+        <ul class="space-y-3">
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+            <span class="text-gray-600">用户 Admin 登录系统</span>
+            <span class="text-gray-400 text-sm ml-auto">2分钟前</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+            <span class="text-gray-600">新增用户 EditorA</span>
+            <span class="text-gray-400 text-sm ml-auto">1小时前</span>
+          </li>
+          <li class="flex items-center">
+            <div class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
+            <span class="text-gray-600">用户 ViewerB 被禁用</span>
+            <span class="text-gray-400 text-sm ml-auto">3小时前</span>
+          </li>
+        </ul>
+      </div>
     </div>
     
-    <div class="content">
-      <HelloWorld msg="欢迎使用管理员后台系统"/>
+    <div class="flex justify-end">
+      <button 
+        @click="logout" 
+        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition duration-150"
+      >
+        退出登录
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from '@/components/HelloWorld.vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'HomeView',
-  components: {
-    HelloWorld
-  },
-  methods: {
-    logout() {
+  setup() {
+    const router = useRouter()
+    
+    const logout = () => {
       // 清除本地存储的认证信息
       localStorage.removeItem('authToken')
       localStorage.removeItem('user')
       
       // 跳转到登录页面
-      this.$router.push('/login')
+      router.push('/login')
+    }
+    
+    return {
+      logout
     }
   }
 }
 </script>
 
 <style scoped>
-.home {
-  padding: 20px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.header h1 {
-  margin: 0;
-  color: #333;
-}
-
-.navigation a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #409eff;
-  font-weight: 500;
-}
-
-.navigation a:hover {
-  color: #337ecc;
-}
-
-.content {
-  max-width: 800px;
-  margin: 0 auto;
-}
+/* 所有样式已通过Tailwind CSS类实现 */
 </style>

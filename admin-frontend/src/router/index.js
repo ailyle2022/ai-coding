@@ -7,7 +7,8 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    meta: { requiresAuth: true }
   },
   {
     path: '/login',
@@ -17,7 +18,8 @@ const routes = [
   {
     path: '/users',
     name: 'users',
-    component: UserListView
+    component: UserListView,
+    meta: { requiresAuth: true }
   },
   {
     path: '/home',
@@ -28,6 +30,19 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+// 添加路由守卫
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('authToken')
+  
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next('/login')
+  } else if (to.name === 'login' && isAuthenticated) {
+    next('/')
+  } else {
+    next()
+  }
 })
 
 export default router
