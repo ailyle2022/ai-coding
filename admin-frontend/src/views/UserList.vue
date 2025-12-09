@@ -1,13 +1,13 @@
 <template>
   <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
     <div class="flex justify-between items-center mb-6">
-      <div class="text-gray-400 font-medium text-sm">共 {{ filteredUsers.length }} 位用户</div>
+      <div class="text-gray-400 font-medium text-base">共 {{ users.length }} 位用户</div>
       <div class="flex space-x-3">
         <div class="relative">
           <input 
             type="text" 
             placeholder="搜索 用户名/邮箱..." 
-            class="px-4 py-2 border border-gray-300 rounded-xl w-64 focus:ring-primary-accent focus:border-primary-accent transition duration-150"
+            class="px-4 py-2 border border-gray-300 rounded-xl w-64 focus:ring-primary-accent focus:border-primary-accent transition duration-150 text-base"
             v-model="searchQuery"
           >
           <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -16,7 +16,7 @@
         </div>
         <button 
           @click="addUser" 
-          class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md"
+          class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md text-base"
         >
           + 新增用户
         </button>
@@ -27,23 +27,23 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">用户名</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">用户名</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">角色</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">状态</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr v-for="user in filteredUsers" :key="user.id">
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.username }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email || '-' }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm">
+          <td class="px-6 py-4 whitespace-nowrap text-base font-medium text-gray-900">{{ user.username }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-base text-gray-500">{{ user.email || '-' }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-base">
             <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
               {{ getUserRole(user) }}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm">
+          <td class="px-6 py-4 whitespace-nowrap text-base">
             <span 
               class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full" 
               :class="user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
@@ -54,20 +54,20 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
             <button 
               @click="editUser(user)" 
-              class="text-primary-accent hover:text-blue-900 mr-4"
+              class="text-primary-accent hover:text-blue-900 mr-4 text-base"
             >
               编辑
             </button>
             <button 
               @click="deleteUser(user)" 
-              class="text-red-500 hover:text-red-700"
+              class="text-red-500 hover:text-red-700 text-base"
             >
               删除
             </button>
           </td>
         </tr>
         <tr v-if="filteredUsers.length === 0 && !loading">
-          <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+          <td colspan="5" class="px-6 py-4 text-center text-base text-gray-500">
             暂无用户数据
           </td>
         </tr>
@@ -76,12 +76,12 @@
     
     <!-- 分页占位符 -->
     <div class="mt-6 flex justify-end items-center text-sm text-gray-600">
-      <button class="p-2 mr-2 rounded-lg hover:bg-gray-100">&lt; 上一页</button>
-      <span class="mx-2">第 1 页 / 共 2 页</span>
-      <button class="p-2 ml-2 rounded-lg hover:bg-gray-100">下一页 &gt;</button>
+      <button class="p-2 mr-2 rounded-lg hover:bg-gray-100 text-sm">&lt; 上一页</button>
+      <span class="mx-2 text-sm">第 1 页 / 共 2 页</span>
+      <button class="p-2 ml-2 rounded-lg hover:bg-gray-100 text-sm">下一页 &gt;</button>
     </div>
     
-    <div v-if="error" class="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
+    <div v-if="error" class="mt-4 p-4 bg-red-50 text-red-700 rounded-lg text-base">
       {{ error }}
     </div>
   </div>
