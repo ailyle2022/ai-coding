@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: admin_gateway_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin_user
+      POSTGRES_PASSWORD: admin_password
+      POSTGRES_DB: admin_gateway_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - admin_gateway_network
+
+volumes:
+  postgres_data:
+
+networks:
+  admin_gateway_network:
+    driver: bridge
