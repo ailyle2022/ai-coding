@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
 import { User } from './user.entity';
+import { Role } from './role.entity';
 import { PasswordService } from './password.service';
 
 export interface LoginInput {
@@ -15,6 +16,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     private readonly passwordService: PasswordService,
   ) {}
 
@@ -85,6 +88,17 @@ export class AuthService {
     }
     
     return user;
+  }
+
+  /**
+   * 查询所有角色
+   * @returns 角色列表
+   */
+  async findAllRoles(): Promise<Role[]> {
+    return await this.roleRepository.find({
+      select: ['id', 'name', 'description', 'createdAt'],
+      order: { id: 'ASC' }
+    });
   }
 
   /**

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home.vue'
 import LoginView from '../views/Login.vue'
 import UserListView from '../views/UserList.vue'
+import RoleListView from '../views/RoleList.vue'
 
 // 不包含侧边栏的App组件
 import { defineAsyncComponent } from 'vue'
@@ -25,6 +26,12 @@ const routes = [
     path: '/users',
     name: 'users',
     component: UserListView,
+    meta: { requiresAuth: true, layout: 'with-sidebar' }
+  },
+  {
+    path: '/roles',
+    name: 'roles',
+    component: RoleListView,
     meta: { requiresAuth: true, layout: 'with-sidebar' }
   },
   {

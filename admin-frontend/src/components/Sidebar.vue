@@ -39,7 +39,12 @@
         </li>
         <!-- 角色管理 -->
         <li>
-          <a href="#" class="flex items-center p-3 rounded-xl text-gray-500 hover:bg-gray-100 transition duration-150 ease-in-out mt-1">
+          <a 
+            href="#" 
+            class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out mt-1"
+            :class="{'bg-secondary-bg text-primary-accent font-semibold': isActive('/roles'), 'text-gray-500 hover:bg-gray-100': !isActive('/roles')}"
+            @click.prevent="navigateTo('/roles')"
+          >
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
             </svg>

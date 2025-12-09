@@ -12,6 +12,13 @@ export const typeDefs = gql`
     updatedAt: String!
   }
 
+  type Role {
+    id: Int!
+    name: String!
+    description: String
+    createdAt: String!
+  }
+
   type AuthPayload {
     token: String!
     user: User
@@ -27,6 +34,7 @@ export const typeDefs = gql`
   type Query {
     users: [User!]!
     user(id: Int!): User
+    roles: [Role!]!
   }
 
   type Mutation {
