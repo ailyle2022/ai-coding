@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/Home.vue'
-import LoginView from '../views/Login.vue'
-import UserListView from '../views/UserList.vue'
-import RoleListView from '../views/RoleList.vue'
+import { useAuthStore } from '@/store/auth'
 
 // 不包含侧边栏的App组件
 import { defineAsyncComponent } from 'vue'
@@ -11,32 +8,34 @@ const AppWithSidebar = defineAsyncComponent(() => import('../App.vue'))
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView,
-    meta: { requiresAuth: true, layout: 'with-sidebar' }
-  },
-  {
     path: '/login',
-    name: 'login',
-    component: LoginView,
+    name: 'Login',
+    component: () => import('../views/Login.vue'),
     meta: { layout: 'without-sidebar' }
   },
   {
+    path: '/',
+    name: 'Home',
+    component: () => import('../views/Home.vue'),
+    meta: { layout: 'with-sidebar' }
+  },
+  {
     path: '/users',
-    name: 'users',
-    component: UserListView,
-    meta: { requiresAuth: true, layout: 'with-sidebar' }
+    name: 'UserList',
+    component: () => import('../views/UserList.vue'),
+    meta: { layout: 'with-sidebar' }
   },
   {
     path: '/roles',
-    name: 'roles',
-    component: RoleListView,
-    meta: { requiresAuth: true, layout: 'with-sidebar' }
+    name: 'RoleList',
+    component: () => import('../views/RoleList.vue'),
+    meta: { layout: 'with-sidebar' }
   },
   {
-    path: '/home',
-    redirect: '/'
+    path: '/roles/add',
+    name: 'AddRole',
+    component: () => import('../views/AddRole.vue'),
+    meta: { layout: 'with-sidebar' }
   }
 ]
 
@@ -45,14 +44,15 @@ const router = createRouter({
   routes
 })
 
-// 添加路由守卫
+// 全局前置守卫
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('authToken')
-  
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/login')
-  } else if (to.name === 'login' && isAuthenticated) {
-    next('/')
+  // 获取认证状态
+  const authStore = useAuthStore()
+  const isAuthenticated = authStore.getAuthToken()
+
+  // 如果访问需要认证的页面但未登录，则重定向到登录页
+  if (to.name !== 'Login' && !isAuthenticated) {
+    next({ name: 'Login' })
   } else {
     next()
   }

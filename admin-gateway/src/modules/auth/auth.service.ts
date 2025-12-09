@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
@@ -9,6 +9,11 @@ import { PasswordService } from './password.service';
 export interface LoginInput {
   username: string;
   password: string;
+}
+
+export interface CreateRoleInput {
+  name: string;
+  description?: string;
 }
 
 @Injectable()
@@ -99,6 +104,35 @@ export class AuthService {
       select: ['id', 'name', 'description', 'createdAt'],
       order: { id: 'ASC' }
     });
+  }
+
+  /**
+   * 创建新角色
+   * @param input 创建角色的输入数据
+   * @returns 创建的角色
+   */
+  async createRole(input: CreateRoleInput): Promise<Role> {
+    // 检查角色名称是否为空
+    if (!input.name || input.name.trim() === '') {
+      throw new BadRequestException('角色名称不能为空');
+    }
+
+    // 检查角色名称是否已存在
+    const existingRole = await this.roleRepository.findOne({
+      where: { name: input.name }
+    });
+
+    if (existingRole) {
+      throw new ConflictException('角色名称已存在');
+    }
+
+    // 创建新角色
+    const role = new Role();
+    role.name = input.name.trim();
+    role.description = input.description?.trim() || null;
+    
+    // 保存角色
+    return await this.roleRepository.save(role);
   }
 
   /**

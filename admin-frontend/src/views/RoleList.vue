@@ -81,11 +81,15 @@
 <script>
 import { gql } from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ref } from 'vue'
+import { computed, ref, onActivated, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 export default {
   name: 'RoleListView',
   setup() {
+    const router = useRouter()
+    const route = useRoute()
+    
     // 搜索查询
     const searchQuery = ref('')
     
@@ -128,9 +132,9 @@ export default {
       )
     })
     
-    // 添加角色（模拟）
+    // 添加角色
     const addRole = () => {
-      alert('TODO: 打开新增角色权限配置')
+      router.push('/roles/add')
     }
     
     // 编辑角色（模拟）
@@ -145,6 +149,20 @@ export default {
       }
     }
     
+    // 当组件被激活时（从其他页面返回时）刷新数据
+    onActivated(() => {
+      refetch()
+    })
+    
+    // 监听路由变化，如果URL中有refresh=true参数，则刷新数据
+    watch(() => route.query.refresh, (newVal) => {
+      if (newVal === 'true') {
+        refetch()
+        // 移除URL中的refresh参数
+        router.replace({ query: { ...route.query, refresh: undefined } })
+      }
+    }, { immediate: true })
+    
     return {
       roles: filteredRoles,
       filteredRoles,
@@ -153,7 +171,8 @@ export default {
       searchQuery,
       addRole,
       editRole,
-      deleteRole
+      deleteRole,
+      refetch
     }
   }
 }

@@ -19,6 +19,11 @@ export const typeDefs = gql`
     createdAt: String!
   }
 
+  input CreateRoleInput {
+    name: String!
+    description: String
+  }
+
   type AuthPayload {
     token: String!
     user: User
@@ -39,5 +44,6 @@ export const typeDefs = gql`
 
   type Mutation {
     login(input: LoginInput!): AuthPayload!
+    createRole(input: CreateRoleInput!): Role!
   }
 `;

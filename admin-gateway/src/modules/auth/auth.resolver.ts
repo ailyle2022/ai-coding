@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Args, Query, Int } from '@nestjs/graphql';
-import { AuthService, LoginInput } from './auth.service';
+import { AuthService, LoginInput, CreateRoleInput } from './auth.service';
 import { AuthPayload } from './auth.payload';
 import { User } from './user.entity';
 import { Role } from './role.entity';
@@ -26,5 +26,10 @@ export class AuthResolver {
   @Query(() => [Role])
   async roles(): Promise<Role[]> {
     return this.authService.findAllRoles();
+  }
+
+  @Mutation(() => Role)
+  async createRole(@Args('input') input: CreateRoleInput): Promise<Role> {
+    return this.authService.createRole(input);
   }
 }

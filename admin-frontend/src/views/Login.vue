@@ -52,11 +52,13 @@ import { gql } from 'graphql-tag'
 import { useMutation } from '@vue/apollo-composable'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/store/auth'
 
 export default {
   name: 'LoginView',
   setup() {
     const router = useRouter()
+    const authStore = useAuthStore()
     
     const loginForm = reactive({
       username: '',
@@ -110,7 +112,7 @@ export default {
         
         if (result.data.login.isSuccess) {
           // 登录成功，保存token并跳转到首页
-          localStorage.setItem('authToken', result.data.login.token)
+          authStore.setAuthToken(result.data.login.token)
           localStorage.setItem('user', JSON.stringify(result.data.login.user))
           router.push('/')
         } else {
