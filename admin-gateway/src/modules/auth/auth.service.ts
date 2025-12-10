@@ -1,9 +1,8 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
-import { User } from './user.entity';
-import { Role } from './role.entity';
+import { User } from '../user/user.entity';
 import { PasswordService } from './password.service';
 
 export interface LoginInput {
@@ -11,18 +10,11 @@ export interface LoginInput {
   password: string;
 }
 
-export interface CreateRoleInput {
-  name: string;
-  description?: string;
-}
-
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
     private readonly passwordService: PasswordService,
   ) {}
 
@@ -66,74 +58,6 @@ export class AuthService {
     }
   }
 
-  /**
-   * 查询所有用户
-   * @returns 用户列表
-   */
-  async findAllUsers(): Promise<User[]> {
-    return await this.userRepository.find({
-      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt', 'updatedAt'],
-      order: { id: 'ASC' }
-    });
-  }
-
-  /**
-   * 根据ID查询用户
-   * @param id 用户ID
-   * @returns 用户信息
-   */
-  async findUserById(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt', 'updatedAt']
-    });
-    
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-    
-    return user;
-  }
-
-  /**
-   * 查询所有角色
-   * @returns 角色列表
-   */
-  async findAllRoles(): Promise<Role[]> {
-    return await this.roleRepository.find({
-      select: ['id', 'name', 'description', 'createdAt'],
-      order: { id: 'ASC' }
-    });
-  }
-
-  /**
-   * 创建新角色
-   * @param input 创建角色的输入数据
-   * @returns 创建的角色
-   */
-  async createRole(input: CreateRoleInput): Promise<Role> {
-    // 检查角色名称是否为空
-    if (!input.name || input.name.trim() === '') {
-      throw new BadRequestException('角色名称不能为空');
-    }
-
-    // 检查角色名称是否已存在
-    const existingRole = await this.roleRepository.findOne({
-      where: { name: input.name }
-    });
-
-    if (existingRole) {
-      throw new ConflictException('角色名称已存在');
-    }
-
-    // 创建新角色
-    const role = new Role();
-    role.name = input.name.trim();
-    role.description = input.description?.trim() || null;
-    
-    // 保存角色
-    return await this.roleRepository.save(role);
-  }
 
   /**
    * 用于生成密码哈希的方法，供后续注册新用户时使用

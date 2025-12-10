@@ -7,13 +7,14 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { PasswordService } from './password.service';
 import { typeDefs } from './auth.schema';
-import { User } from './user.entity';
-import { Role } from './role.entity';
-import { Session } from './session.entity';
+import { UserModule } from '../user/user.module';
+import { RoleModule } from '../role/role.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Role, Session]),
+    UserModule,
+    RoleModule,
+    TypeOrmModule.forFeature([]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typeDefs: typeof typeDefs === 'string' ? typeDefs : print(typeDefs),
