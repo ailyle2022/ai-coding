@@ -1,20 +1,20 @@
 <template>
   <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
     <!-- 添加/编辑用户模态框 -->
-    <EditUserModal 
+    <EditUserModal
       v-if="showEditModal"
       :user="editingUser"
       @close="showEditModal = false"
       @saved="handleUserSaved"
     />
-    
+
     <div class="flex justify-between items-center mb-6">
       <div class="text-gray-400 font-medium text-sm">共 {{ users?.length || 0 }} 位用户</div>
       <div class="flex space-x-3">
         <div class="relative">
-          <input 
-            type="text" 
-            placeholder="搜索 用户名/邮箱..." 
+          <input
+            type="text"
+            placeholder="搜索 用户名/邮箱..."
             class="px-4 py-2 border border-gray-300 rounded-xl w-64 focus:ring-primary-accent focus:border-primary-accent transition duration-150 text-sm"
             v-model="searchQuery"
           >
@@ -22,8 +22,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
-        <button 
-          @click="addUser" 
+        <button
+          @click="addUser"
           class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md text-sm"
         >
           + 新增用户
@@ -55,22 +55,22 @@
             <span v-else class="text-gray-400">-</span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm">
-            <span 
-              class="px-3 inline-flex text-sm leading-5 font-semibold rounded-full" 
+            <span
+              class="px-3 inline-flex text-sm leading-5 font-semibold rounded-full"
               :class="user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
             >
               {{ user.isActive ? '启用' : '禁用' }}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-            <button 
-              @click="editUser(user)" 
+            <button
+              @click="editUser(user)"
               class="text-primary-accent hover:text-blue-900 mr-4 text-sm"
             >
               编辑
             </button>
-            <button 
-              @click="deleteUser(user)" 
+            <button
+              @click="deleteUser(user)"
               class="text-red-500 hover:text-red-700 text-sm"
             >
               删除
@@ -124,14 +124,14 @@ export default {
   components: {
     EditUserModal
   },
-  setup() {
+  setup () {
     // 搜索查询
     const searchQuery = ref('')
-    
+
     // 添加/编辑用户相关状态
     const showEditModal = ref(false)
     const editingUser = ref(null)
-    
+
     // GraphQL查询语句
     const USERS_QUERY = gql`
       query GetUsers {
@@ -151,36 +151,36 @@ export default {
         }
       }
     `
-    
+
     // GraphQL删除用户mutation
     const DELETE_USER_MUTATION = gql`
       mutation DeleteUser($id: Int!) {
         deleteUser(id: $id)
       }
     `
-    
+
     // 使用Apollo查询用户列表
     const { result, loading, error, refetch } = useQuery(USERS_QUERY)
-    
+
     // 使用Apollo删除用户
-    const { mutate: deleteUserMutation, loading: deleteLoading, onDone: onDeleteDone, onError: onDeleteError } = useMutation(DELETE_USER_MUTATION)
-    
+    const { mutate: deleteUserMutation, onDone: onDeleteDone, onError: onDeleteError } = useMutation(DELETE_USER_MUTATION)
+
     // 用户数据
     const users = computed(() => {
       if (!result.value?.users) return []
-      
+
       // 如果有搜索查询，则过滤用户
       if (!searchQuery.value) {
         return result.value.users
       }
-      
+
       const query = searchQuery.value.toLowerCase()
-      return result.value.users.filter(user => 
-        user.username.toLowerCase().includes(query) || 
+      return result.value.users.filter(user =>
+        user.username.toLowerCase().includes(query) ||
         (user.email && user.email.toLowerCase().includes(query))
       )
     })
-    
+
     // 错误信息
     const errorMessage = computed(() => {
       if (error.value) {
@@ -188,7 +188,7 @@ export default {
       }
       return null
     })
-    
+
     // 获取用户全名
     const getUserFullName = (user) => {
       if (user.firstName || user.lastName) {
@@ -196,25 +196,25 @@ export default {
       }
       return '-'
     }
-    
+
     // 添加用户
     const addUser = () => {
       editingUser.value = null
       showEditModal.value = true
     }
-    
+
     // 编辑用户
     const editUser = (user) => {
       editingUser.value = user
       showEditModal.value = true
     }
-    
+
     // 处理用户保存完成事件
     const handleUserSaved = (savedUser) => {
       showEditModal.value = false
       refetch()
     }
-    
+
     // 删除用户
     const deleteUser = async (user) => {
       if (confirm(`确定要删除用户 ${user.username} 吗？`)) {
@@ -222,7 +222,7 @@ export default {
           const result = await deleteUserMutation({
             id: user.id
           })
-          
+
           if (result.data?.deleteUser) {
             // 删除成功，刷新列表
             refetch()
@@ -233,18 +233,18 @@ export default {
         }
       }
     }
-    
+
     // 删除成功的回调
     onDeleteDone(() => {
       // 可以在这里添加额外的成功处理逻辑
     })
-    
+
     // 删除失败的回调
     onDeleteError((error) => {
       console.error('删除用户失败:', error)
       alert('删除用户失败: ' + (error.message || '未知错误'))
     })
-    
+
     return {
       users,
       loading,

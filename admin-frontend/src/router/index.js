@@ -1,11 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 
-// 不包含侧边栏的App组件
-import { defineAsyncComponent } from 'vue'
-const AppWithoutSidebar = defineAsyncComponent(() => import('../AppWithoutSidebar.vue'))
-const AppWithSidebar = defineAsyncComponent(() => import('../App.vue'))
-
 const routes = [
   {
     path: '/login',
@@ -30,7 +25,7 @@ const routes = [
     name: 'RoleList',
     component: () => import('../views/RoleList.vue'),
     meta: { layout: 'with-sidebar' }
-  },
+  }
 ]
 
 const router = createRouter({

@@ -1,28 +1,28 @@
 <template>
   <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
     <!-- 添加角色模态框 -->
-    <EditRoleModal 
+    <EditRoleModal
       v-if="showAddModal"
       :role="null"
       @close="showAddModal = false"
       @saved="handleRoleAdded"
     />
-    
+
     <!-- 编辑角色模态框 -->
-    <EditRoleModal 
+    <EditRoleModal
       v-if="showEditModal"
       :role="editingRole"
       @close="showEditModal = false"
       @saved="handleRoleUpdated"
     />
-    
+
     <div class="flex justify-between items-center mb-6">
       <div class="text-gray-400 font-medium text-sm">共 {{ roles?.length || 0 }} 个角色</div>
       <div class="flex space-x-3">
         <div class="relative">
-          <input 
-            type="text" 
-            placeholder="搜索 角色名称..." 
+          <input
+            type="text"
+            placeholder="搜索 角色名称..."
             class="px-4 py-2 border border-gray-300 rounded-xl w-64 focus:ring-primary-accent focus:border-primary-accent transition duration-150 text-sm"
             v-model="searchQuery"
           >
@@ -30,8 +30,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
-        <button 
-          @click="addRole" 
+        <button
+          @click="addRole"
           class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md text-sm"
         >
           + 新增角色
@@ -53,14 +53,14 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ role.name }}</td>
           <td class="px-6 py-4 text-sm text-gray-500">{{ role.description || '-' }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-            <button 
-              @click="editRole(role)" 
+            <button
+              @click="editRole(role)"
               class="text-primary-accent hover:text-blue-900 mr-4 text-sm"
             >
               编辑
             </button>
-            <button 
-              @click="deleteRole(role)" 
+            <button
+              @click="deleteRole(role)"
               class="text-red-500 hover:text-red-700 text-sm"
             >
               删除
@@ -115,20 +115,20 @@ export default {
   components: {
     EditRoleModal
   },
-  setup() {
+  setup () {
     const route = useRoute()
     const router = useRouter()
-    
+
     // 搜索关键词
     const searchQuery = ref('')
-    
+
     // 添加角色相关状态
     const showAddModal = ref(false)
-    
+
     // 编辑角色相关状态
     const showEditModal = ref(false)
     const editingRole = ref(null)
-    
+
     // GraphQL查询角色列表
     const ROLES_QUERY = gql`
       query GetRoles {
@@ -140,35 +140,35 @@ export default {
         }
       }
     `
-    
+
     // GraphQL删除角色mutation
     const DELETE_ROLE_MUTATION = gql`
       mutation DeleteRole($id: Int!) {
         deleteRole(id: $id)
       }
     `
-    
+
     // 使用Apollo查询角色列表
     const { result, loading, error, refetch } = useQuery(ROLES_QUERY)
-    
+
     // 使用Apollo删除角色
-    const { mutate: deleteRoleMutation, loading: deleteLoading, onDone: onDeleteDone, onError: onDeleteError } = useMutation(DELETE_ROLE_MUTATION)
-    
+    const { mutate: deleteRoleMutation, onDone: onDeleteDone, onError: onDeleteError } = useMutation(DELETE_ROLE_MUTATION)
+
     // 角色数据
     const roles = computed(() => {
       const allRoles = result.value?.roles || []
-      
+
       if (!searchQuery.value) {
         return allRoles
       }
-      
+
       const query = searchQuery.value.toLowerCase()
-      return allRoles.filter(role => 
-        role.name.toLowerCase().includes(query) || 
+      return allRoles.filter(role =>
+        role.name.toLowerCase().includes(query) ||
         (role.description && role.description.toLowerCase().includes(query))
       )
     })
-    
+
     // 错误信息
     const errorMessage = computed(() => {
       if (error.value) {
@@ -176,30 +176,30 @@ export default {
       }
       return null
     })
-    
+
     // 添加角色
     const addRole = () => {
       showAddModal.value = true
     }
-    
+
     // 处理角色添加完成事件
     const handleRoleAdded = () => {
       showAddModal.value = false
       refetch()
     }
-    
+
     // 编辑角色
     const editRole = (role) => {
       editingRole.value = role
       showEditModal.value = true
     }
-    
+
     // 处理角色更新完成事件
     const handleRoleUpdated = (updatedRole) => {
       showEditModal.value = false
       refetch()
     }
-    
+
     // 删除角色
     const deleteRole = async (role) => {
       if (confirm(`确定要删除角色 ${role.name} 吗？`)) {
@@ -207,7 +207,7 @@ export default {
           const result = await deleteRoleMutation({
             id: role.id
           })
-          
+
           if (result.data?.deleteRole) {
             // 删除成功，刷新列表
             refetch()
@@ -218,35 +218,35 @@ export default {
         }
       }
     }
-    
+
     // 删除成功的回调
     onDeleteDone(() => {
       // 可以在这里添加额外的成功处理逻辑
     })
-    
+
     // 删除失败的回调
     onDeleteError((error) => {
-      console.error('删除角色失败:', error);
-      
+      console.error('删除角色失败:', error)
+
       // 解析错误信息
-      let message = '删除角色失败';
+      let message = '删除角色失败'
       if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-        message = error.graphQLErrors[0].message;
+        message = error.graphQLErrors[0].message
       } else if (error.networkError) {
-        message = '网络错误，请检查连接后重试';
+        message = '网络错误，请检查连接后重试'
       } else if (error.message) {
-        message = error.message;
+        message = error.message
       }
-      
+
       // 显示友好的错误提示
-      alert(message);
+      alert(message)
     })
-    
+
     // 页面激活时刷新数据
     onActivated(() => {
       refetch()
     })
-    
+
     // 监听路由变化，检测是否需要刷新
     watch(
       () => route.query.refresh,
@@ -259,7 +259,7 @@ export default {
       },
       { immediate: true }
     )
-    
+
     return {
       roles,
       loading,

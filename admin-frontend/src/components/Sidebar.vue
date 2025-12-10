@@ -11,8 +11,8 @@
       <ul>
         <!-- 首页 -->
         <li>
-          <a 
-            href="#" 
+          <a
+            href="#"
             class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out text-sm"
             :class="{'bg-secondary-bg text-primary-accent font-semibold': isActive('/'), 'text-gray-500 hover:bg-gray-100': !isActive('/')}"
             @click.prevent="navigateTo('/')"
@@ -25,8 +25,8 @@
         </li>
         <!-- 用户管理 -->
         <li>
-          <a 
-            href="#" 
+          <a
+            href="#"
             class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out mt-1 text-sm"
             :class="{'bg-secondary-bg text-primary-accent font-semibold': isActive('/users'), 'text-gray-500 hover:bg-gray-100': !isActive('/users')}"
             @click.prevent="navigateTo('/users')"
@@ -39,8 +39,8 @@
         </li>
         <!-- 角色管理 -->
         <li>
-          <a 
-            href="#" 
+          <a
+            href="#"
             class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out mt-1 text-sm"
             :class="{'bg-secondary-bg text-primary-accent font-semibold': isActive('/roles'), 'text-gray-500 hover:bg-gray-100': !isActive('/roles')}"
             @click.prevent="navigateTo('/roles')"
@@ -62,7 +62,7 @@
         </li>
       </ul>
     </div>
-    
+
     <!-- 底部用户/版本信息 -->
     <div class="p-4 border-t border-gray-100">
       <div class="flex items-center text-sm text-gray-500">
@@ -80,12 +80,12 @@
 export default {
   name: 'Sidebar',
   methods: {
-    navigateTo(path) {
+    navigateTo (path) {
       if (this.$route.path !== path) {
         this.$router.push(path)
       }
     },
-    isActive(path) {
+    isActive (path) {
       return this.$route.path === path
     }
   }

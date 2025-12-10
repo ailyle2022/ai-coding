@@ -2,24 +2,24 @@
   <div class="home">
     <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8">
       <h2 class="text-3xl font-extrabold text-gray-900 mb-6">仪表盘</h2>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
           <div class="text-blue-800 text-3xl font-bold mb-2">12</div>
           <div class="text-blue-600 font-medium">总用户数</div>
         </div>
-        
+
         <div class="bg-green-50 p-6 rounded-xl border border-green-100">
           <div class="text-green-800 text-3xl font-bold mb-2">8</div>
           <div class="text-green-600 font-medium">在线用户</div>
         </div>
-        
+
         <div class="bg-purple-50 p-6 rounded-xl border border-purple-100">
           <div class="text-purple-800 text-3xl font-bold mb-2">4</div>
           <div class="text-purple-600 font-medium">用户角色</div>
         </div>
       </div>
-      
+
       <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
         <h3 class="text-xl font-bold text-gray-800 mb-4">最近活动</h3>
         <ul class="space-y-3">
@@ -41,10 +41,10 @@
         </ul>
       </div>
     </div>
-    
+
     <div class="flex justify-end">
-      <button 
-        @click="logout" 
+      <button
+        @click="logout"
         class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition duration-150"
       >
         退出登录
@@ -58,18 +58,18 @@ import { useRouter } from 'vue-router'
 
 export default {
   name: 'HomeView',
-  setup() {
+  setup () {
     const router = useRouter()
-    
+
     const logout = () => {
       // 清除本地存储的认证信息
       localStorage.removeItem('authToken')
       localStorage.removeItem('user')
-      
+
       // 跳转到登录页面
       router.push('/login')
     }
-    
+
     return {
       logout
     }

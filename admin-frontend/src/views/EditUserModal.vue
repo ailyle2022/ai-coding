@@ -16,7 +16,7 @@
               <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                 {{ isEditing ? '编辑用户' : '新增用户' }}
               </h3>
-              
+
               <div class="mt-4 space-y-4">
                 <div>
                   <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
@@ -32,7 +32,7 @@
                   >
                   <p v-if="errors.username" class="mt-1 text-sm text-red-600">{{ errors.username }}</p>
                 </div>
-                
+
                 <div v-if="!isEditing">
                   <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
                     密码 *
@@ -46,7 +46,7 @@
                   >
                   <p v-if="errors.password" class="mt-1 text-sm text-red-600">{{ errors.password }}</p>
                 </div>
-                
+
                 <div>
                   <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
                     邮箱
@@ -60,7 +60,7 @@
                   >
                   <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">
@@ -74,7 +74,7 @@
                       placeholder="名"
                     >
                   </div>
-                  
+
                   <div>
                     <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">
                       姓
@@ -88,7 +88,7 @@
                     >
                   </div>
                 </div>
-                
+
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
                     状态
@@ -128,9 +128,9 @@
                       {{ rolesError }}
                     </div>
                     <div v-else>
-                      <label 
-                        v-for="role in roles" 
-                        :key="role.id" 
+                      <label
+                        v-for="role in roles"
+                        :key="role.id"
                         class="flex items-center py-1"
                       >
                         <input
@@ -149,7 +149,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
           <button
             type="button"
@@ -187,10 +187,10 @@ export default {
     }
   },
   emits: ['close', 'saved'],
-  setup(props, { emit }) {
+  setup (props, { emit }) {
     // 是否为编辑模式
     const isEditing = ref(!!props.user)
-    
+
     // 表单数据
     const form = reactive({
       username: '',
@@ -201,7 +201,7 @@ export default {
       isActive: true,
       roleIds: []
     })
-    
+
     // 错误信息
     const errors = reactive({
       username: '',
@@ -209,15 +209,15 @@ export default {
       email: '',
       roleIds: ''
     })
-    
+
     // 加载状态
     const loading = ref(false)
-    
+
     // 角色相关状态
     const roles = ref([])
     const rolesLoading = ref(false)
     const rolesError = ref(null)
-    
+
     // GraphQL创建用户mutation
     const CREATE_USER_MUTATION = gql`
       mutation CreateUser($input: CreateUserInput!) {
@@ -236,7 +236,7 @@ export default {
         }
       }
     `
-    
+
     // GraphQL更新用户mutation
     const UPDATE_USER_MUTATION = gql`
       mutation UpdateUser($id: Int!, $input: UpdateUserInput!) {
@@ -255,25 +255,25 @@ export default {
         }
       }
     `
-    
+
     const { mutate: createUser, loading: createLoading, onDone: onCreateDone, onError: onCreateError } = useMutation(CREATE_USER_MUTATION)
     const { mutate: updateUser, loading: updateLoading, onDone: onUpdateDone, onError: onUpdateError } = useMutation(UPDATE_USER_MUTATION)
-    
+
     // 监听加载状态
     watch([createLoading, updateLoading], ([isCreating, isUpdating]) => {
       loading.value = isCreating || isUpdating
     })
-    
+
     // 获取角色列表
     const loadRoles = async () => {
       rolesLoading.value = true
       rolesError.value = null
-      
+
       try {
         const response = await fetch('http://localhost:3000/graphql', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             query: `
@@ -283,10 +283,10 @@ export default {
                   name
                 }
               }
-            `,
-          }),
+            `
+          })
         })
-        
+
         const result = await response.json()
         if (result.data && result.data.roles) {
           roles.value = result.data.roles
@@ -301,25 +301,25 @@ export default {
         rolesLoading.value = false
       }
     }
-    
+
     // 初始化表单数据
     onMounted(() => {
       loadRoles()
-      
+
       if (props.user) {
         form.username = props.user.username
         form.email = props.user.email || ''
         form.firstName = props.user.firstName || ''
         form.lastName = props.user.lastName || ''
         form.isActive = props.user.isActive
-        
+
         // 设置用户已有的角色
         if (props.user.roles) {
           form.roleIds = props.user.roles.map(role => role.id)
         }
       }
     })
-    
+
     // 验证表单
     const validateForm = () => {
       // 清除之前的错误
@@ -327,9 +327,9 @@ export default {
       errors.password = ''
       errors.email = ''
       errors.roleIds = ''
-      
+
       let isValid = true
-      
+
       // 验证用户名
       if (!form.username || form.username.trim() === '') {
         errors.username = '用户名不能为空'
@@ -338,7 +338,7 @@ export default {
         errors.username = '用户名长度不能超过50个字符'
         isValid = false
       }
-      
+
       // 验证密码（仅在创建时需要）
       if (!isEditing.value) {
         if (!form.password || form.password.trim() === '') {
@@ -349,7 +349,7 @@ export default {
           isValid = false
         }
       }
-      
+
       // 验证邮箱格式
       if (form.email && form.email.trim() !== '') {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -361,16 +361,16 @@ export default {
           isValid = false
         }
       }
-      
+
       return isValid
     }
-    
+
     // 提交表单
     const handleSubmit = async () => {
       if (!validateForm()) {
         return
       }
-      
+
       try {
         if (isEditing.value) {
           // 更新用户
@@ -385,7 +385,7 @@ export default {
               roleIds: form.roleIds
             }
           })
-          
+
           if (result.data?.updateUser) {
             emit('saved', result.data.updateUser)
           }
@@ -402,7 +402,7 @@ export default {
               roleIds: form.roleIds
             }
           })
-          
+
           if (result.data?.createUser) {
             emit('saved', result.data.createUser)
           }
@@ -412,33 +412,33 @@ export default {
         // 错误处理由Apollo的onError回调统一处理，避免重复提示
       }
     }
-    
+
     // 创建成功的回调
     onCreateDone((result) => {
       if (result.data?.createUser) {
         emit('saved', result.data.createUser)
       }
     })
-    
+
     // 创建失败的回调
     onCreateError((error) => {
       console.error('创建用户失败:', error)
       alert('创建用户失败: ' + (error.message || '未知错误'))
     })
-    
+
     // 更新成功的回调
     onUpdateDone((result) => {
       if (result.data?.updateUser) {
         emit('saved', result.data.updateUser)
       }
     })
-    
+
     // 更新失败的回调
     onUpdateError((error) => {
       console.error('更新用户失败:', error)
       alert('更新用户失败: ' + (error.message || '未知错误'))
     })
-    
+
     return {
       isEditing,
       form,
