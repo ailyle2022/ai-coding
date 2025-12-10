@@ -11,7 +11,7 @@ export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-    private readonly roleService: RoleService
+    private readonly roleService: RoleService,
   ) {}
 
   @Mutation(() => AuthPayload)

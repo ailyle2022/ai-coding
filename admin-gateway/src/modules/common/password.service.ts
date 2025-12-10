@@ -24,7 +24,10 @@ export class PasswordService {
    * @param hashedPassword 哈希密码
    * @returns 是否匹配
    */
-  async comparePassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
+  async comparePassword(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
     // 使用 bcrypt 比较明文密码和哈希密码
     return await bcrypt.compare(plainPassword, hashedPassword);
   }

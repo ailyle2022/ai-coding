@@ -22,7 +22,9 @@ import { CommonModule } from '../common/common.module';
     TypeOrmModule.forFeature([]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      typeDefs: print(concatAST([commonTypeDefs, authTypeDefs, userTypeDefs, roleTypeDefs])),
+      typeDefs: print(
+        concatAST([commonTypeDefs, authTypeDefs, userTypeDefs, roleTypeDefs]),
+      ),
       playground: true,
     }),
   ],

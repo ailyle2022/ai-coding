@@ -48,7 +48,7 @@ export const commonTypeDefs = gql`
     isActive: Boolean
     roleIds: [Int!]
   }
-  
+
   type AuthPayload {
     token: String!
     user: User

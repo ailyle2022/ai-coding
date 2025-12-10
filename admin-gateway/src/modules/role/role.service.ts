@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { Role } from './role.entity';
@@ -30,7 +35,7 @@ export class RoleService {
   async findAll(): Promise<Role[]> {
     return await this.roleRepository.find({
       select: ['id', 'name', 'description', 'createdAt'],
-      order: { id: 'ASC' }
+      order: { id: 'ASC' },
     });
   }
 
@@ -47,7 +52,7 @@ export class RoleService {
 
     // 检查角色名称是否已存在
     const existingRole = await this.roleRepository.findOne({
-      where: { name: input.name }
+      where: { name: input.name },
     });
 
     if (existingRole) {
@@ -58,7 +63,7 @@ export class RoleService {
     const role = new Role();
     role.name = input.name.trim();
     role.description = input.description?.trim() || null;
-    
+
     // 保存角色
     return await this.roleRepository.save(role);
   }
@@ -71,7 +76,7 @@ export class RoleService {
    */
   async update(id: number, input: UpdateRoleInput): Promise<Role> {
     const role = await this.roleRepository.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!role) {
@@ -87,7 +92,7 @@ export class RoleService {
 
       // 检查新名称是否已存在
       const existingRole = await this.roleRepository.findOne({
-        where: { name: input.name }
+        where: { name: input.name },
       });
 
       if (existingRole) {
@@ -113,7 +118,7 @@ export class RoleService {
    */
   async delete(id: number): Promise<boolean> {
     const role = await this.roleRepository.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!role) {
@@ -127,7 +132,9 @@ export class RoleService {
       .getCount();
 
     if (userCount > 0) {
-      throw new ConflictException(`无法删除角色 "${role.name}"，因为还有 ${userCount} 个用户关联此角色。请先解除用户与此角色的关联。`);
+      throw new ConflictException(
+        `无法删除角色 "${role.name}"，因为还有 ${userCount} 个用户关联此角色。请先解除用户与此角色的关联。`,
+      );
     }
 
     try {

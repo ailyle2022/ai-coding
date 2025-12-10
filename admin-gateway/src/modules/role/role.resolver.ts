@@ -4,9 +4,7 @@ import { Role } from './role.entity';
 
 @Resolver(() => Role)
 export class RoleResolver {
-  constructor(
-    private readonly roleService: RoleService,
-  ) {}
+  constructor(private readonly roleService: RoleService) {}
 
   @Query(() => [Role])
   async roles(): Promise<Role[]> {
@@ -21,13 +19,15 @@ export class RoleResolver {
   @Mutation(() => Role)
   async updateRole(
     @Args('id', { type: () => Int }) id: number,
-    @Args('input') input: UpdateRoleInput
+    @Args('input') input: UpdateRoleInput,
   ): Promise<Role> {
     return this.roleService.update(id, input);
   }
 
   @Mutation(() => Boolean)
-  async deleteRole(@Args('id', { type: () => Int }) id: number): Promise<boolean> {
+  async deleteRole(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<boolean> {
     return this.roleService.delete(id);
   }
 }

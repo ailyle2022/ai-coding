@@ -21,7 +21,7 @@ export class AuthService {
   async login(loginInput: LoginInput): Promise<AuthPayload> {
     const authPayload = new AuthPayload();
     authPayload.token = '';
-    
+
     try {
       // 查找用户
       const user = await this.userRepository.findOne({
@@ -30,7 +30,13 @@ export class AuthService {
       });
 
       // 如果用户不存在或密码不匹配
-      if (!user || !(await this.passwordService.comparePassword(loginInput.password, user.passwordHash))) {
+      if (
+        !user ||
+        !(await this.passwordService.comparePassword(
+          loginInput.password,
+          user.passwordHash,
+        ))
+      ) {
         authPayload.isSuccess = false;
         authPayload.message = 'Invalid credentials';
         return authPayload;
@@ -58,7 +64,6 @@ export class AuthService {
     }
   }
 
-
   /**
    * 用于生成密码哈希的方法，供后续注册新用户时使用
    * @param password 明文密码
@@ -74,9 +79,9 @@ export class AuthService {
     const payload = {
       sub: user.id,
       username: user.username,
-      roles: user.roles?.map(role => role.name) || [],
+      roles: user.roles?.map((role) => role.name) || [],
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24), // 24小时过期
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24小时过期
     };
 
     // 简单的Base64编码作为示例，实际应使用JWT签名

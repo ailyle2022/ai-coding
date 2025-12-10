@@ -12,5 +12,5 @@ export const databaseConfig: TypeOrmModuleOptions = {
   database: process.env.DB_NAME || 'admin_gateway_db',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: process.env.NODE_ENV !== 'production', // 在生产环境中应设置为false
-  logging: false,// process.env.NODE_ENV !== 'production', // 在生产环境中应设置为false
+  logging: false, // process.env.NODE_ENV !== 'production', // 在生产环境中应设置为false
 };
