@@ -38,6 +38,7 @@
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">用户名</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">角色</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">状态</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
         </tr>
@@ -47,6 +48,12 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.username }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email || '-' }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ getUserFullName(user) }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <span v-if="user.roles && user.roles.length > 0">
+              {{ user.roles.map(r => r.name).join(', ') }}
+            </span>
+            <span v-else class="text-gray-400">-</span>
+          </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm">
             <span 
               class="px-3 inline-flex text-sm leading-5 font-semibold rounded-full" 
@@ -137,6 +144,10 @@ export default {
           isActive
           createdAt
           updatedAt
+          roles {
+            id
+            name
+          }
         }
       }
     `

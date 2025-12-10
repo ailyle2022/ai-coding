@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Role } from '../role/role.entity';
 
 @ObjectType()
@@ -40,6 +40,7 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
+  @Field(() => [Role], { nullable: true })
   @ManyToMany(() => Role)
   @JoinTable({
     name: 'user_roles',

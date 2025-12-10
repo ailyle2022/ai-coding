@@ -114,6 +114,37 @@
                     </label>
                   </div>
                 </div>
+
+                <!-- 角色选择 -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">
+                    关联角色
+                  </label>
+                  <div class="border border-gray-300 rounded-lg p-3 max-h-40 overflow-y-auto">
+                    <div v-if="rolesLoading" class="text-center text-gray-500 py-2">
+                      加载角色中...
+                    </div>
+                    <div v-else-if="rolesError" class="text-center text-red-500 py-2">
+                      {{ rolesError }}
+                    </div>
+                    <div v-else>
+                      <label 
+                        v-for="role in roles" 
+                        :key="role.id" 
+                        class="flex items-center py-1"
+                      >
+                        <input
+                          type="checkbox"
+                          :value="role.id"
+                          v-model="form.roleIds"
+                          class="h-4 w-4 text-primary-accent focus:ring-primary-accent border-gray-300 rounded"
+                        >
+                        <span class="ml-2 text-sm text-gray-700">{{ role.name }}</span>
+                      </label>
+                    </div>
+                  </div>
+                  <p v-if="errors.roleIds" class="mt-1 text-sm text-red-600">{{ errors.roleIds }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -167,18 +198,25 @@ export default {
       email: '',
       firstName: '',
       lastName: '',
-      isActive: true
+      isActive: true,
+      roleIds: []
     })
     
     // 错误信息
     const errors = reactive({
       username: '',
       password: '',
-      email: ''
+      email: '',
+      roleIds: ''
     })
     
     // 加载状态
     const loading = ref(false)
+    
+    // 角色相关状态
+    const roles = ref([])
+    const rolesLoading = ref(false)
+    const rolesError = ref(null)
     
     // GraphQL创建用户mutation
     const CREATE_USER_MUTATION = gql`
@@ -191,6 +229,10 @@ export default {
           lastName
           isActive
           createdAt
+          roles {
+            id
+            name
+          }
         }
       }
     `
@@ -206,6 +248,10 @@ export default {
           lastName
           isActive
           createdAt
+          roles {
+            id
+            name
+          }
         }
       }
     `
@@ -218,14 +264,59 @@ export default {
       loading.value = isCreating || isUpdating
     })
     
+    // 获取角色列表
+    const loadRoles = async () => {
+      rolesLoading.value = true
+      rolesError.value = null
+      
+      try {
+        const response = await fetch('http://localhost:3000/graphql', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+              query GetRoles {
+                roles {
+                  id
+                  name
+                }
+              }
+            `,
+          }),
+        })
+        
+        const result = await response.json()
+        if (result.data && result.data.roles) {
+          roles.value = result.data.roles
+        } else if (result.errors) {
+          rolesError.value = '加载角色失败'
+          console.error('加载角色失败:', result.errors)
+        }
+      } catch (err) {
+        rolesError.value = '网络错误，请稍后重试'
+        console.error('加载角色失败:', err)
+      } finally {
+        rolesLoading.value = false
+      }
+    }
+    
     // 初始化表单数据
     onMounted(() => {
+      loadRoles()
+      
       if (props.user) {
         form.username = props.user.username
         form.email = props.user.email || ''
         form.firstName = props.user.firstName || ''
         form.lastName = props.user.lastName || ''
         form.isActive = props.user.isActive
+        
+        // 设置用户已有的角色
+        if (props.user.roles) {
+          form.roleIds = props.user.roles.map(role => role.id)
+        }
       }
     })
     
@@ -235,6 +326,7 @@ export default {
       errors.username = ''
       errors.password = ''
       errors.email = ''
+      errors.roleIds = ''
       
       let isValid = true
       
@@ -289,7 +381,8 @@ export default {
               email: form.email.trim() || undefined,
               firstName: form.firstName.trim() || undefined,
               lastName: form.lastName.trim() || undefined,
-              isActive: form.isActive
+              isActive: form.isActive,
+              roleIds: form.roleIds
             }
           })
           
@@ -305,7 +398,8 @@ export default {
               email: form.email.trim() || undefined,
               firstName: form.firstName.trim() || undefined,
               lastName: form.lastName.trim() || undefined,
-              isActive: form.isActive
+              isActive: form.isActive,
+              roleIds: form.roleIds
             }
           })
           
@@ -350,6 +444,9 @@ export default {
       form,
       errors,
       loading,
+      roles,
+      rolesLoading,
+      rolesError,
       handleSubmit
     }
   }

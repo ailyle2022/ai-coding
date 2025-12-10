@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { Role } from '../role/role.entity';
 import { PasswordService } from '../common/password.service';
 
 // 定义用户输入类型
@@ -12,6 +13,7 @@ export interface CreateUserInput {
   firstName?: string;
   lastName?: string;
   isActive?: boolean;
+  roleIds?: number[]; // 添加角色ID数组
 }
 
 export interface UpdateUserInput {
@@ -20,6 +22,7 @@ export interface UpdateUserInput {
   firstName?: string;
   lastName?: string;
   isActive?: boolean;
+  roleIds?: number[]; // 添加角色ID数组
 }
 
 @Injectable()
@@ -27,6 +30,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     private readonly passwordService: PasswordService,
   ) {}
 
@@ -37,6 +42,7 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
       select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt', 'updatedAt'],
+      relations: ['roles'], // 包含角色关系
       order: { id: 'ASC' }
     });
   }
@@ -49,7 +55,8 @@ export class UserService {
   async findById(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt', 'updatedAt']
+      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt', 'updatedAt'],
+      relations: ['roles'] // 包含角色关系
     });
     
     if (!user) {
@@ -96,6 +103,14 @@ export class UserService {
     // 对密码进行哈希处理
     user.passwordHash = await this.passwordService.hashPassword(input.password);
     
+    // 处理角色分配
+    if (input.roleIds && input.roleIds.length > 0) {
+      const roles = await this.roleRepository.findByIds(input.roleIds);
+      user.roles = roles;
+    } else {
+      user.roles = []; // 没有指定角色则设为空数组
+    }
+    
     // 保存用户
     return await this.userRepository.save(user);
   }
@@ -137,6 +152,16 @@ export class UserService {
     if (input.firstName !== undefined) user.firstName = input.firstName;
     if (input.lastName !== undefined) user.lastName = input.lastName;
     if (input.isActive !== undefined) user.isActive = input.isActive;
+    
+    // 处理角色更新
+    if (input.roleIds !== undefined) { // 注意这里检查的是undefined，允许传入空数组
+      if (input.roleIds.length > 0) {
+        const roles = await this.roleRepository.findByIds(input.roleIds);
+        user.roles = roles;
+      } else {
+        user.roles = []; // 清空角色
+      }
+    }
     
     // 保存更新后的用户
     return await this.userRepository.save(user);
