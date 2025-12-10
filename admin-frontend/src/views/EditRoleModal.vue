@@ -175,7 +175,7 @@ export default {
         }
       } catch (err) {
         console.error('更新角色失败:', err)
-        alert('更新角色失败: ' + (err.message || '未知错误'))
+        // 错误处理由Apollo的onError回调统一处理，避免重复提示
       }
     }
     
