@@ -43,16 +43,16 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">角色名称</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">角色描述</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">角色名称</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">角色描述</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
         <tr v-for="role in roles" :key="role.id">
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ role.name }}</td>
           <td class="px-6 py-4 text-sm text-gray-500">{{ role.description || '-' }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-xs font-medium">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
             <button 
               @click="editRole(role)" 
               class="text-primary-accent hover:text-blue-900 mr-4 text-sm"

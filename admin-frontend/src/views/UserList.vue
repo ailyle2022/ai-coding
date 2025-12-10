@@ -35,11 +35,11 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">用户名</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">用户名</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">状态</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -49,13 +49,13 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ getUserFullName(user) }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm">
             <span 
-              class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full" 
+              class="px-3 inline-flex text-sm leading-5 font-semibold rounded-full" 
               :class="user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
             >
               {{ user.isActive ? '启用' : '禁用' }}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-xs font-medium">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
             <button 
               @click="editUser(user)" 
               class="text-primary-accent hover:text-blue-900 mr-4 text-sm"
