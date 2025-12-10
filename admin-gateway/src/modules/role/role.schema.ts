@@ -13,11 +13,18 @@ export const roleTypeDefs = gql`
     description: String
   }
 
+  input UpdateRoleInput {
+    name: String
+    description: String
+  }
+
   extend type Query {
     roles: [Role!]!
   }
 
   extend type Mutation {
     createRole(input: CreateRoleInput!): Role!
+    updateRole(id: Int!, input: UpdateRoleInput!): Role!
+    deleteRole(id: Int!): Boolean!
   }
 `;

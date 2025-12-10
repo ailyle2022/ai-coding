@@ -1,7 +1,15 @@
 <template>
   <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+    <!-- 编辑角色模态框 -->
+    <EditRoleModal 
+      v-if="showEditModal"
+      :role="editingRole"
+      @close="showEditModal = false"
+      @saved="handleRoleUpdated"
+    />
+    
     <div class="flex justify-between items-center mb-6">
-      <div class="text-gray-400 font-medium text-sm">共 {{ roles.length }} 个角色</div>
+      <div class="text-gray-400 font-medium text-sm">共 {{ roles?.length || 0 }} 个角色</div>
       <div class="flex space-x-3">
         <div class="relative">
           <input 
@@ -33,7 +41,7 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr v-for="role in filteredRoles" :key="role.id">
+        <tr v-for="role in roles" :key="role.id">
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ role.name }}</td>
           <td class="px-6 py-4 text-sm text-gray-500">{{ role.description || '-' }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-xs font-medium">
@@ -41,7 +49,7 @@
               @click="editRole(role)" 
               class="text-primary-accent hover:text-blue-900 mr-4 text-sm"
             >
-              编辑权限
+              编辑
             </button>
             <button 
               @click="deleteRole(role)" 
@@ -51,49 +59,66 @@
             </button>
           </td>
         </tr>
-        <tr v-if="filteredRoles.length === 0 && !loading">
-          <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">
-            暂无角色数据
-          </td>
-        </tr>
       </tbody>
     </table>
-    
+
+    <!-- 空状态 -->
+    <div v-if="!loading && (!roles || roles.length === 0)" class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">暂无角色</h3>
+      <p class="mt-1 text-sm text-gray-500">开始创建您的第一个角色。</p>
+    </div>
+
     <!-- 加载状态 -->
-    <div v-if="loading" class="mt-6 flex justify-center">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-accent"></div>
+    <div v-if="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-accent"></div>
+      <p class="mt-2 text-sm text-gray-500">加载中...</p>
     </div>
-    
+
     <!-- 错误信息 -->
-    <div v-if="error" class="mt-4 p-4 bg-red-50 text-red-700 rounded-lg text-sm">
-      {{ error }}
-    </div>
-    
-    <!-- 分页占位符 -->
-    <div class="mt-6 flex justify-end items-center text-xs text-gray-600">
-      <button class="p-2 mr-2 rounded-lg hover:bg-gray-100 text-xs">&lt; 上一页</button>
-      <span class="mx-2 text-xs">第 1 页 / 共 1 页</span>
-      <button class="p-2 ml-2 rounded-lg hover:bg-gray-100 text-xs">下一页 &gt;</button>
+    <div v-if="errorMessage" class="rounded-lg bg-red-50 p-4 mt-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            {{ errorMessage }}
+          </h3>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { ref, computed, onActivated, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useQuery, useMutation } from '@vue/apollo-composable'
 import { gql } from 'graphql-tag'
-import { useQuery } from '@vue/apollo-composable'
-import { computed, ref, onActivated, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import EditRoleModal from './EditRoleModal.vue'
 
 export default {
   name: 'RoleListView',
+  components: {
+    EditRoleModal
+  },
   setup() {
-    const router = useRouter()
     const route = useRoute()
+    const router = useRouter()
     
-    // 搜索查询
+    // 搜索关键词
     const searchQuery = ref('')
     
-    // GraphQL查询语句
+    // 编辑角色相关状态
+    const showEditModal = ref(false)
+    const editingRole = ref(null)
+    
+    // GraphQL查询角色列表
     const ROLES_QUERY = gql`
       query GetRoles {
         roles {
@@ -105,8 +130,18 @@ export default {
       }
     `
     
+    // GraphQL删除角色mutation
+    const DELETE_ROLE_MUTATION = gql`
+      mutation DeleteRole($id: Int!) {
+        deleteRole(id: $id)
+      }
+    `
+    
     // 使用Apollo查询角色列表
     const { result, loading, error, refetch } = useQuery(ROLES_QUERY)
+    
+    // 使用Apollo删除角色
+    const { mutate: deleteRoleMutation, loading: deleteLoading, onDone: onDeleteDone, onError: onDeleteError } = useMutation(DELETE_ROLE_MUTATION)
     
     // 角色数据
     const roles = computed(() => result.value?.roles || [])
@@ -122,11 +157,11 @@ export default {
     // 过滤角色数据
     const filteredRoles = computed(() => {
       if (!searchQuery.value) {
-        return roles.value
+        return roles.value || []
       }
       
       const query = searchQuery.value.toLowerCase()
-      return roles.value.filter(role => 
+      return (roles.value || []).filter(role => 
         role.name.toLowerCase().includes(query) || 
         (role.description && role.description.toLowerCase().includes(query))
       )
@@ -137,47 +172,80 @@ export default {
       router.push('/roles/add')
     }
     
-    // 编辑角色（模拟）
+    // 编辑角色
     const editRole = (role) => {
-      alert(`TODO: 编辑角色 ${role.name} 的权限`)
+      editingRole.value = role
+      showEditModal.value = true
     }
     
-    // 删除角色（模拟）
-    const deleteRole = (role) => {
+    // 处理角色更新完成事件
+    const handleRoleUpdated = (updatedRole) => {
+      showEditModal.value = false
+      refetch()
+    }
+    
+    // 删除角色
+    const deleteRole = async (role) => {
       if (confirm(`确定要删除角色 ${role.name} 吗？`)) {
-        alert(`TODO: 删除角色 ${role.name}`)
+        try {
+          const result = await deleteRoleMutation({
+            id: role.id
+          })
+          
+          if (result.data?.deleteRole) {
+            // 删除成功，刷新列表
+            refetch()
+          }
+        } catch (err) {
+          console.error('删除角色失败:', err)
+          alert('删除角色失败: ' + (err.message || '未知错误'))
+        }
       }
     }
     
-    // 当组件被激活时（从其他页面返回时）刷新数据
+    // 删除成功的回调
+    onDeleteDone(() => {
+      // 可以在这里添加额外的成功处理逻辑
+    })
+    
+    // 删除失败的回调
+    onDeleteError((error) => {
+      console.error('删除角色失败:', error)
+      alert('删除角色失败: ' + (error.message || '未知错误'))
+    })
+    
+    // 页面激活时刷新数据
     onActivated(() => {
       refetch()
     })
     
-    // 监听路由变化，如果URL中有refresh=true参数，则刷新数据
-    watch(() => route.query.refresh, (newVal) => {
-      if (newVal === 'true') {
-        refetch()
-        // 移除URL中的refresh参数
-        router.replace({ query: { ...route.query, refresh: undefined } })
-      }
-    }, { immediate: true })
+    // 监听路由变化，检测是否需要刷新
+    watch(
+      () => route.query.refresh,
+      (newVal) => {
+        if (newVal) {
+          refetch()
+          // 删除查询参数
+          router.replace({ query: { ...route.query, refresh: undefined } })
+        }
+      },
+      { immediate: true }
+    )
     
     return {
       roles: filteredRoles,
-      filteredRoles,
       loading,
-      error: errorMessage,
+      errorMessage,
       searchQuery,
       addRole,
       editRole,
       deleteRole,
-      refetch
+      refetch,
+      // 编辑角色相关
+      showEditModal,
+      editingRole,
+      handleRoleUpdated
     }
   }
 }
 </script>
-
-<style scoped>
-/* 所有样式已通过Tailwind CSS类实现 */
-</style>

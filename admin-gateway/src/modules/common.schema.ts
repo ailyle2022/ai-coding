@@ -24,6 +24,11 @@ export const commonTypeDefs = gql`
     description: String
   }
 
+  input UpdateRoleInput {
+    name: String
+    description: String
+  }
+
   input CreateUserInput {
     username: String!
     password: String!
