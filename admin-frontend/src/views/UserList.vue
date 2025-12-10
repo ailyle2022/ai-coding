@@ -1,11 +1,11 @@
 <template>
   <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-    <!-- 编辑用户模态框 -->
+    <!-- 添加/编辑用户模态框 -->
     <EditUserModal 
       v-if="showEditModal"
       :user="editingUser"
       @close="showEditModal = false"
-      @saved="handleUserUpdated"
+      @saved="handleUserSaved"
     />
     
     <div class="flex justify-between items-center mb-6">
@@ -110,7 +110,6 @@
 import { gql } from 'graphql-tag'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import EditUserModal from './EditUserModal.vue'
 
 export default {
@@ -119,12 +118,10 @@ export default {
     EditUserModal
   },
   setup() {
-    const router = useRouter()
-    
     // 搜索查询
     const searchQuery = ref('')
     
-    // 编辑用户相关状态
+    // 添加/编辑用户相关状态
     const showEditModal = ref(false)
     const editingUser = ref(null)
     
@@ -191,7 +188,8 @@ export default {
     
     // 添加用户
     const addUser = () => {
-      router.push('/users/add')
+      editingUser.value = null
+      showEditModal.value = true
     }
     
     // 编辑用户
@@ -200,8 +198,8 @@ export default {
       showEditModal.value = true
     }
     
-    // 处理用户更新完成事件
-    const handleUserUpdated = (updatedUser) => {
+    // 处理用户保存完成事件
+    const handleUserSaved = (savedUser) => {
       showEditModal.value = false
       refetch()
     }
@@ -246,10 +244,10 @@ export default {
       editUser,
       deleteUser,
       refetch,
-      // 编辑用户相关
+      // 添加/编辑用户相关
       showEditModal,
       editingUser,
-      handleUserUpdated
+      handleUserSaved
     }
   }
 }

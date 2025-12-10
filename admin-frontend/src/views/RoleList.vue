@@ -1,5 +1,13 @@
 <template>
   <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+    <!-- 添加角色模态框 -->
+    <EditRoleModal 
+      v-if="showAddModal"
+      :role="null"
+      @close="showAddModal = false"
+      @saved="handleRoleAdded"
+    />
+    
     <!-- 编辑角色模态框 -->
     <EditRoleModal 
       v-if="showEditModal"
@@ -114,6 +122,9 @@ export default {
     // 搜索关键词
     const searchQuery = ref('')
     
+    // 添加角色相关状态
+    const showAddModal = ref(false)
+    
     // 编辑角色相关状态
     const showEditModal = ref(false)
     const editingRole = ref(null)
@@ -144,7 +155,19 @@ export default {
     const { mutate: deleteRoleMutation, loading: deleteLoading, onDone: onDeleteDone, onError: onDeleteError } = useMutation(DELETE_ROLE_MUTATION)
     
     // 角色数据
-    const roles = computed(() => result.value?.roles || [])
+    const roles = computed(() => {
+      const allRoles = result.value?.roles || []
+      
+      if (!searchQuery.value) {
+        return allRoles
+      }
+      
+      const query = searchQuery.value.toLowerCase()
+      return allRoles.filter(role => 
+        role.name.toLowerCase().includes(query) || 
+        (role.description && role.description.toLowerCase().includes(query))
+      )
+    })
     
     // 错误信息
     const errorMessage = computed(() => {
@@ -154,22 +177,15 @@ export default {
       return null
     })
     
-    // 过滤角色数据
-    const filteredRoles = computed(() => {
-      if (!searchQuery.value) {
-        return roles.value || []
-      }
-      
-      const query = searchQuery.value.toLowerCase()
-      return (roles.value || []).filter(role => 
-        role.name.toLowerCase().includes(query) || 
-        (role.description && role.description.toLowerCase().includes(query))
-      )
-    })
-    
     // 添加角色
     const addRole = () => {
-      router.push('/roles/add')
+      showAddModal.value = true
+    }
+    
+    // 处理角色添加完成事件
+    const handleRoleAdded = () => {
+      showAddModal.value = false
+      refetch()
     }
     
     // 编辑角色
@@ -198,7 +214,7 @@ export default {
           }
         } catch (err) {
           console.error('删除角色失败:', err)
-          alert('删除角色失败: ' + (err.message || '未知错误'))
+          // 错误处理由Apollo的onError回调统一处理，避免重复提示
         }
       }
     }
@@ -233,7 +249,7 @@ export default {
     )
     
     return {
-      roles: filteredRoles,
+      roles,
       loading,
       errorMessage,
       searchQuery,
@@ -241,6 +257,9 @@ export default {
       editRole,
       deleteRole,
       refetch,
+      // 添加角色相关
+      showAddModal,
+      handleRoleAdded,
       // 编辑角色相关
       showEditModal,
       editingRole,

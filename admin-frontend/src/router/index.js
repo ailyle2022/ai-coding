@@ -31,12 +31,6 @@ const routes = [
     component: () => import('../views/RoleList.vue'),
     meta: { layout: 'with-sidebar' }
   },
-  {
-    path: '/roles/add',
-    name: 'AddRole',
-    component: () => import('../views/AddRole.vue'),
-    meta: { layout: 'with-sidebar' }
-  }
 ]
 
 const router = createRouter({

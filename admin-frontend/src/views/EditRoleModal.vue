@@ -14,7 +14,7 @@
           <div class="sm:flex sm:items-start">
             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
               <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                编辑角色
+                {{ isEditing ? '编辑角色' : '新增角色' }}
               </h3>
               
               <div class="mt-4 space-y-4">
@@ -26,6 +26,7 @@
                     id="roleName"
                     type="text"
                     v-model="form.name"
+                    :disabled="isEditing"
                     :class="{'border-red-500': errors.name, 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-accent focus:border-primary-accent': true}"
                     placeholder="请输入角色名称"
                   >
@@ -83,11 +84,14 @@ export default {
   props: {
     role: {
       type: Object,
-      required: true
+      default: null
     }
   },
   emits: ['close', 'saved'],
   setup(props, { emit }) {
+    // 是否为编辑模式
+    const isEditing = ref(!!props.role)
+    
     // 表单数据
     const form = reactive({
       name: '',
@@ -103,6 +107,18 @@ export default {
     // 加载状态
     const loading = ref(false)
     
+    // GraphQL创建角色mutation
+    const CREATE_ROLE_MUTATION = gql`
+      mutation CreateRole($input: CreateRoleInput!) {
+        createRole(input: $input) {
+          id
+          name
+          description
+          createdAt
+        }
+      }
+    `
+    
     // GraphQL更新角色mutation
     const UPDATE_ROLE_MUTATION = gql`
       mutation UpdateRole($id: Int!, $input: UpdateRoleInput!) {
@@ -115,17 +131,20 @@ export default {
       }
     `
     
-    const { mutate: updateRole, loading: updateLoading, onDone, onError } = useMutation(UPDATE_ROLE_MUTATION)
+    const { mutate: createRole, loading: createLoading, onDone: onCreateDone, onError: onCreateError } = useMutation(CREATE_ROLE_MUTATION)
+    const { mutate: updateRole, loading: updateLoading, onDone: onUpdateDone, onError: onUpdateError } = useMutation(UPDATE_ROLE_MUTATION)
     
     // 监听加载状态
-    watch(updateLoading, (isLoading) => {
-      loading.value = isLoading
+    watch([createLoading, updateLoading], ([isCreating, isUpdating]) => {
+      loading.value = isCreating || isUpdating
     })
     
     // 初始化表单数据
     onMounted(() => {
-      form.name = props.role.name
-      form.description = props.role.description || ''
+      if (props.role) {
+        form.name = props.role.name
+        form.description = props.role.description || ''
+      }
     })
     
     // 验证表单
@@ -161,38 +180,68 @@ export default {
       }
       
       try {
-        const result = await updateRole({
-          id: props.role.id,
-          input: {
-            name: form.name.trim(),
-            description: form.description.trim() || undefined
+        if (isEditing.value) {
+          // 更新角色
+          const result = await updateRole({
+            id: props.role.id,
+            input: {
+              name: form.name.trim(),
+              description: form.description.trim() || undefined
+            }
+          })
+          
+          if (result.data?.updateRole) {
+            // 更新成功
+            emit('saved', result.data.updateRole)
           }
-        })
-        
-        if (result.data?.updateRole) {
-          // 更新成功
-          emit('saved', result.data.updateRole)
+        } else {
+          // 创建角色
+          const result = await createRole({
+            input: {
+              name: form.name.trim(),
+              description: form.description.trim() || undefined
+            }
+          })
+          
+          if (result.data?.createRole) {
+            // 创建成功
+            emit('saved', result.data.createRole)
+          }
         }
       } catch (err) {
-        console.error('更新角色失败:', err)
+        console.error(`${isEditing.value ? '更新' : '创建'}角色失败:`, err)
         // 错误处理由Apollo的onError回调统一处理，避免重复提示
       }
     }
     
+    // 创建成功的回调
+    onCreateDone((result) => {
+      if (result.data?.createRole) {
+        emit('saved', result.data.createRole)
+      }
+    })
+    
+    // 创建失败的回调
+    onCreateError((error) => {
+      console.error('创建角色失败:', error)
+      alert('创建角色失败: ' + (error.message || '未知错误'))
+    })
+    
     // 更新成功的回调
-    onDone((result) => {
+    onUpdateDone((result) => {
       if (result.data?.updateRole) {
         emit('saved', result.data.updateRole)
       }
     })
     
     // 更新失败的回调
-    onError((error) => {
+    onUpdateError((error) => {
       console.error('更新角色失败:', error)
       alert('更新角色失败: ' + (error.message || '未知错误'))
     })
     
     return {
+      isEditing,
       form,
       errors,
       loading,
