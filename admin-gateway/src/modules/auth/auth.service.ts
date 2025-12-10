@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
 import { User } from '../user/user.entity';
-import { PasswordService } from './password.service';
+import { PasswordService } from '../common/password.service';
 
 export interface LoginInput {
   username: string;

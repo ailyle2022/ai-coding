@@ -1,5 +1,27 @@
 import { gql } from 'graphql-tag';
 
+export const authTypeDefs = gql`
+  type AuthPayload {
+    token: String!
+    user: User
+    isSuccess: Boolean!
+    message: String
+  }
+
+  input LoginInput {
+    username: String!
+    password: String!
+  }
+
+  type Query {
+    _: Boolean
+  }
+
+  type Mutation {
+    login(input: LoginInput!): AuthPayload!
+  }
+`;
+
 export const typeDefs = gql`
   type User {
     id: Int!
@@ -24,18 +46,6 @@ export const typeDefs = gql`
     description: String
   }
 
-  type AuthPayload {
-    token: String!
-    user: User
-    isSuccess: Boolean!
-    message: String
-  }
-
-  input LoginInput {
-    username: String!
-    password: String!
-  }
-
   type Query {
     users: [User!]!
     user(id: Int!): User
@@ -43,7 +53,6 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    login(input: LoginInput!): AuthPayload!
     createRole(input: CreateRoleInput!): Role!
   }
 `;
