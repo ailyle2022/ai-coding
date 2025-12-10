@@ -47,7 +47,7 @@ ON CONFLICT (name) DO NOTHING;
 -- Insert a default admin user (username: admin, password: admin)
 -- Note: In production, this should be removed and a secure password should be used
 INSERT INTO users (username, password_hash, email, first_name, last_name) VALUES 
-    ('admin', '$2b$10$7i.Jfe83.PYBapBHzW./zOAMRM0qlCxyQybxJbMfPRsH0BQiLzcGy', 'admin@example.com', 'Admin', 'User')
+    ('admin', '$2b$10$qvy0IECPR3YR2jdCK.Y4Mutjr.B9Zs7vp9vCvL455Hq8iydEDbwcO', 'admin@example.com', 'Admin', 'User')
 ON CONFLICT (username) DO NOTHING;
 
 -- Assign admin role to admin user
