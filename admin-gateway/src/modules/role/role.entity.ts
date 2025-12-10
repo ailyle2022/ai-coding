@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { User } from '../user/user.entity';
 
@@ -21,6 +21,18 @@ export class Role {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
+  @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, user => user.roles)
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+  })
   users: User[];
 }

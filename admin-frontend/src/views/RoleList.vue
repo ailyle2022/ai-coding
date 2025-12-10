@@ -226,8 +226,20 @@ export default {
     
     // 删除失败的回调
     onDeleteError((error) => {
-      console.error('删除角色失败:', error)
-      alert('删除角色失败: ' + (error.message || '未知错误'))
+      console.error('删除角色失败:', error);
+      
+      // 解析错误信息
+      let message = '删除角色失败';
+      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+        message = error.graphQLErrors[0].message;
+      } else if (error.networkError) {
+        message = '网络错误，请检查连接后重试';
+      } else if (error.message) {
+        message = error.message;
+      }
+      
+      // 显示友好的错误提示
+      alert(message);
     })
     
     // 页面激活时刷新数据

@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, QueryFailedError } from 'typeorm';
 import { Role } from './role.entity';
+import { User } from '../user/user.entity';
 
 export interface CreateRoleInput {
   name: string;
@@ -18,6 +19,8 @@ export class RoleService {
   constructor(
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   /**
@@ -117,7 +120,21 @@ export class RoleService {
       throw new NotFoundException(`角色ID ${id} 不存在`);
     }
 
-    await this.roleRepository.remove(role);
-    return true;
+    // 检查是否有用户关联此角色
+    const userCount = await this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.roles', 'role', 'role.id = :roleId', { roleId: id })
+      .getCount();
+
+    if (userCount > 0) {
+      throw new ConflictException(`无法删除角色 "${role.name}"，因为还有 ${userCount} 个用户关联此角色。请先解除用户与此角色的关联。`);
+    }
+
+    try {
+      await this.roleRepository.remove(role);
+      return true;
+    } catch (error) {
+      throw error;
+    }
   }
 }
