@@ -66,9 +66,7 @@ export class ProductStyleController {
         ? new Date(style.updatedAt).toISOString()
         : new Date().toISOString(),
     }));
-
-    console.log(productStylesList);
-
+    
     return { productStyles: productStylesList };
   }
 
