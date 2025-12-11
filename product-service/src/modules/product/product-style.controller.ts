@@ -66,17 +66,28 @@ export class ProductStyleController {
         ? new Date(style.updatedAt).toISOString()
         : new Date().toISOString(),
     }));
-    
+
     return { productStyles: productStylesList };
   }
 
   @GrpcMethod('ProductStyleService', 'FindOne')
   async grpcFindOne(data: iProductStyleId): Promise<iProductStyle> {
+    this.logger.debug('FindOne data:', JSON.stringify(data.id, null, 2));
+
+    if (!data.id) {
+      throw new Error(`data.id not found`);
+    }
+
     const productStyle = await this.productStyleService.findOne(data.id);
+
+    // 如果找不到对应的产品样式，抛出异常
+    if (!productStyle) {
+      throw new Error(`Product style with id ${data.id} not found`);
+    }
 
     // 确保日期字段处理方式与FindAll一致
     const result: iProductStyle = {
-      id: productStyle.id ?? 0,
+      id: productStyle.id,
       name: productStyle.name ?? '',
       description: productStyle.description || '',
       isActive: productStyle.isActive ?? false,
