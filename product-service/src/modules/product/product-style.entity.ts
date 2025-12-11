@@ -12,7 +12,7 @@ export class ProductStyle {
   description: string;
 
   @Column({ default: true })
-  isActive: boolean;
+  is_active: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
