@@ -8,7 +8,7 @@ import {
   Param,
   Logger,
 } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import { ProductStyleService } from './product-style.service';
 import { ProductStyle } from './product-style.entity';
 
@@ -72,15 +72,12 @@ export class ProductStyleController {
 
   @GrpcMethod('ProductStyleService', 'FindOne')
   async grpcFindOne(data: iProductStyleId): Promise<iProductStyle> {
-    if (!data.id) {
-      throw new Error(`data.id not found`);
-    }
-
+    this.logger.debug('FindOne data:', JSON.stringify(data, null, 2));
     const productStyle = await this.productStyleService.findOne(data.id);
-
-    // 如果找不到对应的产品样式，抛出异常
+    
+    // 如果找不到对应的产品样式，抛出一个gRPC异常
     if (!productStyle) {
-      throw new Error(`Product style with id ${data.id} not found`);
+      throw new RpcException(`Product style with id ${data.id} not found`);
     }
 
     // 确保日期字段处理方式与FindAll一致
@@ -132,14 +129,14 @@ export class ProductStyleController {
   @GrpcMethod('ProductStyleService', 'Update')
   async grpcUpdate(data: iUpdateProductStyleRequest): Promise<any> {
     if (!data.id) {
-      throw new Error(`data.id not found`);
+      throw new RpcException(`data.id not found`);
     }
 
     const productStyle = await this.productStyleService.findOne(data.id);
 
     // 如果找不到对应的产品样式，抛出异常
     if (!productStyle) {
-      throw new Error(`Product style with id ${data.id} not found`);
+      throw new RpcException(`Product style with id ${data.id} not found`);
     }
 
     const updated = await this.productStyleService.update(data.id, {
