@@ -16,7 +16,7 @@ import { ProductStyle } from './product-style.entity';
 export class ProductStyleController {
   private readonly logger = new Logger(ProductStyleController.name);
 
-  constructor(private readonly productStyleService: ProductStyleService) { }
+  constructor(private readonly productStyleService: ProductStyleService) {}
 
   // REST API方法
   @Get()
@@ -72,9 +72,8 @@ export class ProductStyleController {
 
   @GrpcMethod('ProductStyleService', 'FindOne')
   async grpcFindOne(data: iProductStyleId): Promise<iProductStyle> {
-    this.logger.debug('FindOne data:', JSON.stringify(data, null, 2));
     const productStyle = await this.productStyleService.findOne(data.id);
-    
+
     // 如果找不到对应的产品样式，抛出一个gRPC异常
     if (!productStyle) {
       throw new RpcException(`Product style with id ${data.id} not found`);
