@@ -15,7 +15,7 @@ interface iUpdateProductStyleRequest {
 }
 
 interface iProductStyleList {
-  product_styles: Array<iProductStyle>;
+  productStyles: Array<iProductStyle>;
 }
 
 interface iProductStyle {

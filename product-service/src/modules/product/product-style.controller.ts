@@ -69,7 +69,7 @@ export class ProductStyleController {
 
     console.log(productStylesList);
 
-    return { product_styles: productStylesList };
+    return { productStyles: productStylesList };
   }
 
   @GrpcMethod('ProductStyleService', 'FindOne')
