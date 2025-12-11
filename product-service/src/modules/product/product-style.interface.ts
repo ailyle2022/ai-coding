@@ -1,33 +1,34 @@
-interface ProductStyleId {
+interface iProductStyleId {
   id: number;
 }
 
-interface CreateProductStyleRequest {
+interface iCreateProductStyleRequest {
   name: string;
   description: string;
   is_active: boolean;
 }
 
-interface UpdateProductStyleRequest {
+interface iUpdateProductStyleRequest {
   id: number;
   description: string;
   is_active: boolean;
 }
 
-interface ProductStyleList {
-  product_styles: Array<{
-    id: number;
-    name: string;
-    description: string;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-  }>;
+interface iProductStyleList {
+  product_styles: Array<iProductStyle>;
 }
 
-interface RemoveResponse {
+interface iProductStyle {
+  id: number;
+  name: string;
+  description: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface iRemoveResponse {
   success: boolean;
 }
 
-interface Empty {
-}
+interface Empty {}

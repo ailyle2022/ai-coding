@@ -6,10 +6,7 @@ import { databaseConfig } from './config/database.config';
 import { ProductStyleModule } from './modules/product/product-style.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot(databaseConfig),
-    ProductStyleModule,
-  ],
+  imports: [TypeOrmModule.forRoot(databaseConfig), ProductStyleModule],
   controllers: [AppController],
   providers: [AppService],
 })

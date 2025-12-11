@@ -23,7 +23,10 @@ export class ProductStyleService {
     return this.productStyleRepository.save(productStyle);
   }
 
-  async update(id: number, productStyleData: Partial<ProductStyle>): Promise<ProductStyle> {
+  async update(
+    id: number,
+    productStyleData: Partial<ProductStyle>,
+  ): Promise<ProductStyle> {
     await this.productStyleRepository.update(id, productStyleData);
     return this.findOne(id);
   }
