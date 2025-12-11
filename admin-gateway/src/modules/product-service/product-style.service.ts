@@ -120,7 +120,7 @@ export class ProductStyleService {
     const requestData = {
       id,
       description: productStyleData.description,
-      is_active: productStyleData.isActive,
+      isActive: productStyleData.isActive,
     };
 
     try {
@@ -140,7 +140,6 @@ export class ProductStyleService {
           ),
         )
         .toPromise();
-
       return result;
     } catch (error) {
       this.logger.error(
