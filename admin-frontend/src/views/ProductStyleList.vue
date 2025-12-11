@@ -45,6 +45,7 @@
         <tr>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">产品样式名称</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">产品样式描述</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">状态</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
         </tr>
       </thead>
@@ -52,6 +53,14 @@
         <tr v-for="productStyle in productStyles" :key="productStyle.id">
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ productStyle.name }}</td>
           <td class="px-6 py-4 text-sm text-gray-500">{{ productStyle.description || '-' }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <span
+              class="px-3 inline-flex text-sm leading-5 font-semibold rounded-full"
+              :class="productStyle.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+            >
+              {{ productStyle.isActive ? '启用' : '禁用' }}
+            </span>
+          </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
             <button
               @click="editProductStyle(productStyle)"
