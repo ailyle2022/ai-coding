@@ -131,6 +131,17 @@ export class ProductStyleController {
 
   @GrpcMethod('ProductStyleService', 'Update')
   async grpcUpdate(data: iUpdateProductStyleRequest): Promise<any> {
+    if (!data.id) {
+      throw new Error(`data.id not found`);
+    }
+
+    const productStyle = await this.productStyleService.findOne(data.id);
+
+    // 如果找不到对应的产品样式，抛出异常
+    if (!productStyle) {
+      throw new Error(`Product style with id ${data.id} not found`);
+    }
+
     const updated = await this.productStyleService.update(data.id, {
       description: data.description,
       isActive: data.isActive,
