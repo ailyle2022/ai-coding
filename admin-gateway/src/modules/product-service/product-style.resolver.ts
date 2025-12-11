@@ -12,7 +12,9 @@ export class ProductStyleResolver {
   }
 
   @Query(() => ProductStyle, { name: 'productStyle' })
-  async getProductStyle(@Args('id', { type: () => Int }) id: number): Promise<ProductStyle> {
+  async getProductStyle(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<ProductStyle> {
     return this.productStyleService.findOne(id);
   }
 
@@ -32,7 +34,9 @@ export class ProductStyleResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteProductStyle(@Args('id', { type: () => Int }) id: number): Promise<boolean> {
+  async deleteProductStyle(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<boolean> {
     return this.productStyleService.remove(id);
   }
 }

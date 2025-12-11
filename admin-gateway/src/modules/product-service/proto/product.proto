@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package product;
+
+service ProductStyleService {
+  rpc FindAll (Empty) returns (ProductStyleList) {}
+  rpc FindOne (ProductStyleId) returns (ProductStyle) {}
+  rpc Create (CreateProductStyleRequest) returns (ProductStyle) {}
+  rpc Update (UpdateProductStyleRequest) returns (ProductStyle) {}
+  rpc Remove (ProductStyleId) returns (RemoveResponse) {}
+}
+
+message Empty {}
+
+message ProductStyleId {
+  int32 id = 1;
+}
+
+message ProductStyle {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  bool is_active = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message ProductStyleList {
+  repeated ProductStyle product_styles = 1;
+}
+
+message CreateProductStyleRequest {
+  string name = 1;
+  string description = 2;
+  bool is_active = 3;
+}
+
+message UpdateProductStyleRequest {
+  int32 id = 1;
+  string description = 2;
+  bool is_active = 3;
+}
+
+message RemoveResponse {
+  bool success = 1;
+}
