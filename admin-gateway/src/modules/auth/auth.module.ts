@@ -13,22 +13,25 @@ import { userTypeDefs } from '../user/user.schema';
 import { roleTypeDefs } from '../role/role.schema';
 import { commonTypeDefs } from '../common.schema';
 import { CommonModule } from '../common/common.module';
+import { ProductStyleModule } from '../product-style/product-style.module';
+import { productStyleSchema } from '../product-style/product-style.schema';
 
 @Module({
   imports: [
     CommonModule,
     UserModule,
     RoleModule,
+    ProductStyleModule,
     TypeOrmModule.forFeature([]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typeDefs: print(
-        concatAST([commonTypeDefs, authTypeDefs, userTypeDefs, roleTypeDefs]),
+        concatAST([commonTypeDefs, authTypeDefs, userTypeDefs, roleTypeDefs, productStyleSchema]),
       ),
       playground: true,
     }),
   ],
   providers: [AuthResolver, AuthService],
-  exports: [TypeOrmModule],
+  exports: [AuthService],
 })
 export class AuthModule {}

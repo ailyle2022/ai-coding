@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
+import { ProductStyleModule } from './modules/product-style/product-style.module';
 import { databaseConfig } from './config/database.config';
 
 @Module({
@@ -13,6 +14,7 @@ import { databaseConfig } from './config/database.config';
     AuthModule,
     UserModule,
     RoleModule,
+    ProductStyleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

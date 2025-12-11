@@ -51,6 +51,20 @@
             <span class="font-medium">角色管理</span>
           </a>
         </li>
+        <!-- 产品样式管理 -->
+        <li>
+          <a
+            href="#"
+            class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out mt-1 text-sm"
+            :class="{'bg-secondary-bg text-primary-accent font-semibold': isActive('/product-styles'), 'text-gray-500 hover:bg-gray-100': !isActive('/product-styles')}"
+            @click.prevent="navigateTo('/product-styles')"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+            </svg>
+            <span class="font-medium">产品样式管理</span>
+          </a>
+        </li>
         <!-- 日志查看 -->
         <li>
           <a href="#" class="flex items-center p-3 rounded-xl text-gray-500 hover:bg-gray-100 transition duration-150 ease-in-out mt-1 text-sm">

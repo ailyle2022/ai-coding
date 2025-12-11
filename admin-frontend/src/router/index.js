@@ -25,6 +25,12 @@ const routes = [
     name: 'RoleList',
     component: () => import('../views/RoleList.vue'),
     meta: { layout: 'with-sidebar' }
+  },
+  {
+    path: '/product-styles',
+    name: 'ProductStyleList',
+    component: () => import('../views/ProductStyleList.vue'),
+    meta: { layout: 'with-sidebar' }
   }
 ]
 

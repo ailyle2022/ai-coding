@@ -1,4 +1,14 @@
 import { gql } from 'graphql-tag';
+import { ObjectType, Field } from '@nestjs/graphql';
+
+@ObjectType()
+export class BaseEntity {
+  @Field()
+  createdAt: string;
+
+  @Field()
+  updatedAt: string;
+}
 
 export const commonTypeDefs = gql`
   type User {
