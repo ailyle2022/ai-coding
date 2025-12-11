@@ -5,13 +5,13 @@ interface iProductStyleId {
 interface iCreateProductStyleRequest {
   name: string;
   description: string;
-  is_active: boolean;
+  isActive: boolean;
 }
 
 interface iUpdateProductStyleRequest {
   id: number;
   description: string;
-  is_active: boolean;
+  isActive: boolean;
 }
 
 interface iProductStyleList {
@@ -22,9 +22,9 @@ interface iProductStyle {
   id: number;
   name: string;
   description: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface iRemoveResponse {

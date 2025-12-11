@@ -58,11 +58,11 @@ export class ProductStyleController {
       id: style.id,
       name: style.name,
       description: style.description || '',
-      is_active: style.isActive,
-      created_at: style.createdAt
+      isActive: style.isActive,
+      createdAt: style.createdAt
         ? new Date(style.createdAt).toISOString()
         : new Date().toISOString(),
-      updated_at: style.updatedAt
+      updatedAt: style.updatedAt
         ? new Date(style.updatedAt).toISOString()
         : new Date().toISOString(),
     }));
@@ -81,14 +81,14 @@ export class ProductStyleController {
       id: productStyle.id ?? 0,
       name: productStyle.name ?? '',
       description: productStyle.description || '',
-      is_active: productStyle.isActive ?? false,
-      created_at:
+      isActive: productStyle.isActive ?? false,
+      createdAt:
         productStyle.createdAt instanceof Date
           ? productStyle.createdAt.toISOString()
           : typeof productStyle.createdAt === 'string'
             ? productStyle.createdAt
             : new Date().toISOString(),
-      updated_at:
+      updatedAt:
         productStyle.updatedAt instanceof Date
           ? productStyle.updatedAt.toISOString()
           : typeof productStyle.updatedAt === 'string'
@@ -109,7 +109,7 @@ export class ProductStyleController {
     const created = await this.productStyleService.create({
       name: data.name,
       description: data.description,
-      isActive: data.is_active,
+      isActive: data.isActive,
     });
 
     // 映射实体到 gRPC 响应格式
@@ -117,11 +117,11 @@ export class ProductStyleController {
       id: created.id,
       name: created.name,
       description: created.description || '',
-      is_active: created.isActive,
-      created_at: created.createdAt
+      isActive: created.isActive,
+      createdAt: created.createdAt
         ? new Date(created.createdAt).toISOString()
         : new Date().toISOString(),
-      updated_at: created.updatedAt
+      updatedAt: created.updatedAt
         ? new Date(created.updatedAt).toISOString()
         : new Date().toISOString(),
     };
@@ -131,7 +131,7 @@ export class ProductStyleController {
   async grpcUpdate(data: iUpdateProductStyleRequest): Promise<any> {
     const updated = await this.productStyleService.update(data.id, {
       description: data.description,
-      isActive: data.is_active,
+      isActive: data.isActive,
     });
 
     // 映射实体到 gRPC 响应格式
@@ -139,11 +139,11 @@ export class ProductStyleController {
       id: updated.id,
       name: updated.name,
       description: updated.description || '',
-      is_active: updated.isActive,
-      created_at: updated.createdAt
+      isActive: updated.isActive,
+      createdAt: updated.createdAt
         ? new Date(updated.createdAt).toISOString()
         : new Date().toISOString(),
-      updated_at: updated.updatedAt
+      updatedAt: updated.updatedAt
         ? new Date(updated.updatedAt).toISOString()
         : new Date().toISOString(),
     };
