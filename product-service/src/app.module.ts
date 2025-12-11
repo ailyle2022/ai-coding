@@ -3,16 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { databaseConfig } from './config/database.config';
-import { ProductStyle } from './modules/product/product-style.entity';
-import { ProductStyleService } from './modules/product/product-style.service';
-import { ProductStyleController } from './modules/product/product-style.controller';
+import { ProductStyleModule } from './modules/product/product-style.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
-    TypeOrmModule.forFeature([ProductStyle])
+    ProductStyleModule,
   ],
-  controllers: [AppController, ProductStyleController],
-  providers: [AppService, ProductStyleService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
