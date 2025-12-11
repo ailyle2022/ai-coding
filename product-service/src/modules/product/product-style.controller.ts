@@ -16,7 +16,7 @@ import { ProductStyle } from './product-style.entity';
 export class ProductStyleController {
   private readonly logger = new Logger(ProductStyleController.name);
 
-  constructor(private readonly productStyleService: ProductStyleService) {}
+  constructor(private readonly productStyleService: ProductStyleService) { }
 
   // REST API方法
   @Get()
@@ -72,8 +72,6 @@ export class ProductStyleController {
 
   @GrpcMethod('ProductStyleService', 'FindOne')
   async grpcFindOne(data: iProductStyleId): Promise<iProductStyle> {
-    this.logger.debug('FindOne data:', JSON.stringify(data.id, null, 2));
-
     if (!data.id) {
       throw new Error(`data.id not found`);
     }
@@ -104,11 +102,6 @@ export class ProductStyleController {
             ? productStyle.updatedAt
             : new Date().toISOString(),
     };
-
-    this.logger.debug(
-      'FindOne result before serialization:',
-      JSON.stringify(result, null, 2),
-    );
 
     return result;
   }
