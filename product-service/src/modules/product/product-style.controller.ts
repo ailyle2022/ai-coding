@@ -79,7 +79,7 @@ export class ProductStyleController {
       id: style.id,
       name: style.name,
       description: style.description || '',
-      is_active: style.isActive,
+      is_active: style.is_active,
       created_at: style.createdAt ? new Date(style.createdAt).toISOString() : new Date().toISOString(),
       updated_at: style.updatedAt ? new Date(style.updatedAt).toISOString() : new Date().toISOString(),
     }));
@@ -95,7 +95,7 @@ export class ProductStyleController {
       id: productStyle.id,
       name: productStyle.name,
       description: productStyle.description || '',
-      is_active: productStyle.isActive,
+      is_active: productStyle.is_active,
       created_at: productStyle.createdAt ? new Date(productStyle.createdAt).toISOString() : new Date().toISOString(),
       updated_at: productStyle.updatedAt ? new Date(productStyle.updatedAt).toISOString() : new Date().toISOString(),
     };
@@ -106,7 +106,7 @@ export class ProductStyleController {
     const created = await this.productStyleService.create({
       name: data.name,
       description: data.description,
-      isActive: data.is_active,
+      is_active: data.is_active,
     });
 
     // 映射实体到 gRPC 响应格式
@@ -114,7 +114,7 @@ export class ProductStyleController {
       id: created.id,
       name: created.name,
       description: created.description || '',
-      is_active: created.isActive,
+      is_active: created.is_active,
       created_at: created.createdAt ? new Date(created.createdAt).toISOString() : new Date().toISOString(),
       updated_at: created.updatedAt ? new Date(created.updatedAt).toISOString() : new Date().toISOString(),
     };
@@ -124,7 +124,7 @@ export class ProductStyleController {
   async grpcUpdate(data: UpdateProductStyleRequest): Promise<any> {
     const updated = await this.productStyleService.update(data.id, {
       description: data.description,
-      isActive: data.is_active,
+      is_active: data.is_active,
     });
 
     // 映射实体到 gRPC 响应格式
@@ -132,7 +132,7 @@ export class ProductStyleController {
       id: updated.id,
       name: updated.name,
       description: updated.description || '',
-      is_active: updated.isActive,
+      is_active: updated.is_active,
       created_at: updated.createdAt ? new Date(updated.createdAt).toISOString() : new Date().toISOString(),
       updated_at: updated.updatedAt ? new Date(updated.updatedAt).toISOString() : new Date().toISOString(),
     };
