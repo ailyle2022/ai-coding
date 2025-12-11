@@ -3,40 +3,6 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { ProductStyleService } from './product-style.service';
 import { ProductStyle } from './product-style.entity';
 
-interface ProductStyleId {
-  id: number;
-}
-
-interface CreateProductStyleRequest {
-  name: string;
-  description: string;
-  is_active: boolean;
-}
-
-interface UpdateProductStyleRequest {
-  id: number;
-  description: string;
-  is_active: boolean;
-}
-
-interface ProductStyleList {
-  product_styles: Array<{
-    id: number;
-    name: string;
-    description: string;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-  }>;
-}
-
-interface RemoveResponse {
-  success: boolean;
-}
-
-interface Empty {
-}
-
 @Controller('product-styles')
 export class ProductStyleController {
   constructor(private readonly productStyleService: ProductStyleService) {}
@@ -79,7 +45,7 @@ export class ProductStyleController {
       id: style.id,
       name: style.name,
       description: style.description || '',
-      is_active: style.is_active,
+      is_active: style.isActive,
       created_at: style.createdAt ? new Date(style.createdAt).toISOString() : new Date().toISOString(),
       updated_at: style.updatedAt ? new Date(style.updatedAt).toISOString() : new Date().toISOString(),
     }));
@@ -95,7 +61,7 @@ export class ProductStyleController {
       id: productStyle.id,
       name: productStyle.name,
       description: productStyle.description || '',
-      is_active: productStyle.is_active,
+      is_active: productStyle.isActive,
       created_at: productStyle.createdAt ? new Date(productStyle.createdAt).toISOString() : new Date().toISOString(),
       updated_at: productStyle.updatedAt ? new Date(productStyle.updatedAt).toISOString() : new Date().toISOString(),
     };
@@ -106,7 +72,7 @@ export class ProductStyleController {
     const created = await this.productStyleService.create({
       name: data.name,
       description: data.description,
-      is_active: data.is_active,
+      isActive: data.is_active,
     });
 
     // 映射实体到 gRPC 响应格式
@@ -114,7 +80,7 @@ export class ProductStyleController {
       id: created.id,
       name: created.name,
       description: created.description || '',
-      is_active: created.is_active,
+      is_active: created.isActive,
       created_at: created.createdAt ? new Date(created.createdAt).toISOString() : new Date().toISOString(),
       updated_at: created.updatedAt ? new Date(created.updatedAt).toISOString() : new Date().toISOString(),
     };
@@ -124,7 +90,7 @@ export class ProductStyleController {
   async grpcUpdate(data: UpdateProductStyleRequest): Promise<any> {
     const updated = await this.productStyleService.update(data.id, {
       description: data.description,
-      is_active: data.is_active,
+      isActive: data.is_active,
     });
 
     // 映射实体到 gRPC 响应格式
@@ -132,7 +98,7 @@ export class ProductStyleController {
       id: updated.id,
       name: updated.name,
       description: updated.description || '',
-      is_active: updated.is_active,
+      is_active: updated.isActive,
       created_at: updated.createdAt ? new Date(updated.createdAt).toISOString() : new Date().toISOString(),
       updated_at: updated.updatedAt ? new Date(updated.updatedAt).toISOString() : new Date().toISOString(),
     };
