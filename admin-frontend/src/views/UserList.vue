@@ -9,12 +9,12 @@
     />
 
     <div class="flex justify-between items-center mb-6">
-      <div class="text-gray-400 font-medium text-sm">共 {{ users?.length || 0 }} 位用户</div>
+      <div class="text-gray-400 font-medium text-sm">{{ $t('users.userList') }} ({{ users?.length || 0 }})</div>
       <div class="flex space-x-3">
         <div class="relative">
           <input
             type="text"
-            placeholder="搜索 用户名/邮箱..."
+            :placeholder="$t('users.searchPlaceholder')"
             class="px-4 py-2 border border-gray-300 rounded-xl w-64 focus:ring-primary-accent focus:border-primary-accent transition duration-150 text-sm"
             v-model="searchQuery"
           >
@@ -26,7 +26,7 @@
           @click="addUser"
           class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md text-sm"
         >
-          + 新增用户
+          + {{ $t('users.addUser') }}
         </button>
       </div>
     </div>
@@ -35,12 +35,12 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">用户名</th>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">邮箱</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">{{ $t('users.username') }}</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">{{ $t('users.email') }}</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">姓名</th>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">角色</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">{{ $t('users.role') }}</th>
           <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">状态</th>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">{{ $t('users.actions') }}</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">

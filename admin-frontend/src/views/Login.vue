@@ -2,30 +2,30 @@
   <div class="login-container flex items-center justify-center min-h-screen bg-gray-50">
     <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
       <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900">管理员登录</h2>
-        <p class="text-gray-500 mt-2">请输入您的账号和密码</p>
+        <h2 class="text-3xl font-bold text-gray-900">{{ $t('login.login') }}</h2>
+        <p class="text-gray-500 mt-2">{{ $t('message.hello') }}</p>
       </div>
 
       <form @submit.prevent="handleLogin" class="space-y-6">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('login.username') }}</label>
           <input
             id="username"
             v-model="loginForm.username"
             type="text"
-            placeholder="请输入用户名"
+            :placeholder="$t('login.usernameRequired')"
             required
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-accent focus:border-primary-accent transition duration-150"
           />
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('login.password') }}</label>
           <input
             id="password"
             v-model="loginForm.password"
             type="password"
-            placeholder="请输入密码"
+            :placeholder="$t('login.passwordRequired')"
             required
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-accent focus:border-primary-accent transition duration-150"
           />
@@ -36,7 +36,7 @@
           class="w-full py-2 bg-primary-accent hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-150 shadow-md"
           :disabled="loading"
         >
-          {{ loading ? '登录中...' : '登录' }}
+          {{ loading ? $t('login.login') + '...' : $t('login.login') }}
         </button>
       </form>
 
