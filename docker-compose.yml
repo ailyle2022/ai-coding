@@ -17,8 +17,20 @@ services:
     networks:
       - admin_gateway_network
 
+  redis:
+    image: redis:7-alpine
+    container_name: admin_gateway_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - admin_gateway_network
+
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   admin_gateway_network:
