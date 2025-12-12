@@ -35,7 +35,9 @@ export class ProductStyleService {
         .pipe(
           map((response) => {
             // this.logger.debug('Raw response from gRPC service:', JSON.stringify(response));
-            const mappedStyles = response.productStyles.map((style) => {
+            // 处理response.productStyles可能为undefined的情况
+            const productStyles = response.productStyles || [];
+            const mappedStyles = productStyles.map((style) => {
               // this.logger.debug('Raw style data:', JSON.stringify(style));
               return {
                 id: style.id,
