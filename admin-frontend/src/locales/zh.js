@@ -12,6 +12,14 @@ export default {
     logs: '日志查看',
     admin: '超级管理员'
   },
+  common: {
+    status: '状态',
+    actions: '操作',
+    edit: '编辑',
+    delete: '删除',
+    enable: '启用',
+    disable: '禁用'
+  },
   login: {
     username: '用户名',
     password: '密码',
@@ -26,8 +34,10 @@ export default {
     deleteUser: '删除用户',
     username: '用户名',
     email: '邮箱',
+    name: '姓名',
     role: '角色',
-    actions: '操作',
+    firstName: '名',
+    lastName: '姓',
     searchPlaceholder: '搜索 用户名/邮箱...',
     totalUsers: '总用户数',
     onlineUsers: '在线用户'

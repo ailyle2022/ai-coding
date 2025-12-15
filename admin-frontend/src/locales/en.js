@@ -12,6 +12,14 @@ export default {
     logs: 'Logs',
     admin: 'Admin'
   },
+  common: {
+    status: 'Status',
+    actions: 'Actions',
+    edit: 'Edit',
+    delete: 'Delete',
+    enable: 'Enable',
+    disable: 'Disable'
+  },
   login: {
     username: 'Username',
     password: 'Password',
@@ -26,8 +34,10 @@ export default {
     deleteUser: 'Delete User',
     username: 'Username',
     email: 'Email',
+    name: 'Name',
     role: 'Role',
-    actions: 'Actions',
+    firstName: 'First Name',
+    lastName: 'Last Name',
     searchPlaceholder: 'Search username/email...',
     totalUsers: 'Total Users',
     onlineUsers: 'Online Users'

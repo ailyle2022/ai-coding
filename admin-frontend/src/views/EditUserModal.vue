@@ -20,7 +20,7 @@
               <div class="mt-4 space-y-4">
                 <div>
                   <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
-                    用户名 *
+                    {{ $t('users.username')}} *
                   </label>
                   <input
                     id="username"
@@ -35,7 +35,7 @@
 
                 <div v-if="!isEditing">
                   <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                    密码 *
+                    {{ $t('login.password')}} *
                   </label>
                   <input
                     id="password"
@@ -49,7 +49,7 @@
 
                 <div>
                   <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                    邮箱
+                    {{ $t('users.email')}}
                   </label>
                   <input
                     id="email"
@@ -64,7 +64,7 @@
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">
-                      名
+                      {{ $t('users.firstName')}}
                     </label>
                     <input
                       id="firstName"
@@ -77,7 +77,7 @@
 
                   <div>
                     <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">
-                      姓
+                      {{ $t('users.lastName')}}
                     </label>
                     <input
                       id="lastName"
@@ -91,7 +91,7 @@
 
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
-                    状态
+                    {{ $t('common.status')}}
                   </label>
                   <div class="flex items-center">
                     <label class="inline-flex items-center">
@@ -101,7 +101,7 @@
                         :value="true"
                         class="text-primary-accent focus:ring-primary-accent"
                       >
-                      <span class="ml-2">启用</span>
+                      <span class="ml-2">{{ $t('common.enable')}}</span>
                     </label>
                     <label class="inline-flex items-center ml-6">
                       <input
@@ -110,7 +110,7 @@
                         :value="false"
                         class="text-primary-accent focus:ring-primary-accent"
                       >
-                      <span class="ml-2">禁用</span>
+                      <span class="ml-2">{{ $t('common.disable')}}</span>
                     </label>
                   </div>
                 </div>
@@ -118,7 +118,7 @@
                 <!-- 角色选择 -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
-                    关联角色
+                    {{ $t('users.role')}}
                   </label>
                   <div class="border border-gray-300 rounded-lg p-3 max-h-40 overflow-y-auto">
                     <div v-if="rolesLoading" class="text-center text-gray-500 py-2">
