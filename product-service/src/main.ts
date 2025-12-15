@@ -21,7 +21,7 @@ async function bootstrap() {
   // 使用winston日志
   const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
-  
+
   await app.listen();
   logger.log('Product Service is running on port 50051');
 }

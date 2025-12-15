@@ -44,33 +44,37 @@ export const winstonLogger: Logger = createLogger({
 // 只在非测试环境下添加文件transports
 if (process.env.NODE_ENV !== 'test') {
   // 错误级别日志文件，按天轮转
-  winstonLogger.add(new (require('winston-daily-rotate-file'))({
-    filename: path.join(logDir, 'error-%DATE%.log'),
-    datePattern: 'YYYY-MM-DD',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d',
-    level: LogLevel.ERROR,
-    format: format.combine(
-      format.timestamp(),
-      format.errors({ stack: true }),
-      format.json(),
-    ),
-  }));
-  
+  winstonLogger.add(
+    new (require('winston-daily-rotate-file'))({
+      filename: path.join(logDir, 'error-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d',
+      level: LogLevel.ERROR,
+      format: format.combine(
+        format.timestamp(),
+        format.errors({ stack: true }),
+        format.json(),
+      ),
+    }),
+  );
+
   // 所有级别日志文件，按天轮转
-  winstonLogger.add(new (require('winston-daily-rotate-file'))({
-    filename: path.join(logDir, 'combined-%DATE%.log'),
-    datePattern: 'YYYY-MM-DD',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d',
-    format: format.combine(
-      format.timestamp(),
-      format.errors({ stack: true }),
-      format.json(),
-    ),
-  }));
+  winstonLogger.add(
+    new (require('winston-daily-rotate-file'))({
+      filename: path.join(logDir, 'combined-%DATE%.log'),
+      datePattern: 'YYYY-MM-DD',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d',
+      format: format.combine(
+        format.timestamp(),
+        format.errors({ stack: true }),
+        format.json(),
+      ),
+    }),
+  );
 }
 
 // 此文件已废弃，配置已移到LoggerModule中

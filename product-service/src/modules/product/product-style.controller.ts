@@ -24,7 +24,9 @@ export class ProductStyleController {
     this.logger.log('Fetching all product styles');
     try {
       const productStyles = await this.productStyleService.findAll();
-      this.logger.log(`Successfully fetched ${productStyles.length} product styles`);
+      this.logger.log(
+        `Successfully fetched ${productStyles.length} product styles`,
+      );
       return productStyles;
     } catch (error) {
       this.logger.error('Error fetching all product styles', error.stack);

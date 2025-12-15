@@ -39,7 +39,7 @@ if (!fs.existsSync(logDir)) {
             }),
           ),
         }),
-        
+
         // 错误级别日志文件，按天轮转
         new (require('winston-daily-rotate-file'))({
           filename: path.join(logDir, 'error-%DATE%.log'),
@@ -54,7 +54,7 @@ if (!fs.existsSync(logDir)) {
             format.json(),
           ),
         }),
-        
+
         // 所有级别日志文件，按天轮转
         new (require('winston-daily-rotate-file'))({
           filename: path.join(logDir, 'combined-%DATE%.log'),
