@@ -5,6 +5,7 @@ import { AuthPayload, AuthUser } from './auth.payload';
 import { User } from '../user/user.entity';
 import { PasswordService } from '../common/password.service';
 import { CacheService } from '../common/cache.service';
+import { RabbitMQService } from '../common/rabbitmq.service';
 import * as crypto from 'crypto';
 
 export interface LoginInput {
@@ -19,6 +20,7 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly passwordService: PasswordService,
     private readonly cacheService: CacheService,
+    private readonly rabbitMQService: RabbitMQService,
   ) {}
 
   async login(loginInput: LoginInput): Promise<AuthPayload> {
@@ -60,6 +62,13 @@ export class AuthService {
       authPayload.token = token;
       authPayload.user = authUser;
       authPayload.isSuccess = true;
+
+      // 发布登录事件
+      await this.rabbitMQService.publishEvent('helloEvent', {
+        userId: user.id,
+        username: user.username,
+        loginTime: new Date(),
+      });
 
       return authPayload;
     } catch (error) {
