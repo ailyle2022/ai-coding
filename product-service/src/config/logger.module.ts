@@ -44,9 +44,9 @@ if (!fs.existsSync(logDir)) {
         new (require('winston-daily-rotate-file'))({
           filename: path.join(logDir, 'error-%DATE%.log'),
           datePattern: 'YYYY-MM-DD',
-          zippedArchive: true,
-          maxSize: '20m',
-          maxFiles: '14d',
+          zippedArchive: false,
+          maxSize: 1024, // 1KB
+          maxFiles: 2,
           level: 'error',
           format: format.combine(
             format.timestamp(),
@@ -59,9 +59,9 @@ if (!fs.existsSync(logDir)) {
         new (require('winston-daily-rotate-file'))({
           filename: path.join(logDir, 'combined-%DATE%.log'),
           datePattern: 'YYYY-MM-DD',
-          zippedArchive: true,
-          maxSize: '20m',
-          maxFiles: '14d',
+          zippedArchive: false,
+          maxSize: 1024, // 1KB
+          maxFiles: 2,
           format: format.combine(
             format.timestamp(),
             format.errors({ stack: true }),
