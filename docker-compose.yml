@@ -28,9 +28,25 @@ services:
     networks:
       - admin_gateway_network
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: admin_gateway_rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin_password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - admin_gateway_network
+
 volumes:
   postgres_data:
   redis_data:
+  rabbitmq_data:
 
 networks:
   admin_gateway_network:
