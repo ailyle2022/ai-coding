@@ -106,8 +106,6 @@ export default {
     changeLanguage(event) {
       const newLocale = event.target.value
       localStorage.setItem('locale', newLocale)
-      // 强制刷新页面以更新所有组件的语言
-      window.location.reload()
     }
   }
 }
