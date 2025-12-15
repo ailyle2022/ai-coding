@@ -48,6 +48,7 @@ export default {
     editRole: 'Edit Role',
     deleteRole: 'Delete Role',
     roleName: 'Role Name',
+    roleDescirption: 'Role Description',
     permissions: 'Permissions',
     rolesCount: 'User Roles'
   },

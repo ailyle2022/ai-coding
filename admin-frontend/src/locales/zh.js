@@ -48,6 +48,7 @@ export default {
     editRole: '编辑角色',
     deleteRole: '删除角色',
     roleName: '角色名称',
+    roleDescirption: '角色描述',
     permissions: '权限',
     rolesCount: '用户角色'
   },

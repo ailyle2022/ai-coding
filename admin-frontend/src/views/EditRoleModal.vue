@@ -20,7 +20,7 @@
               <div class="mt-4 space-y-4">
                 <div>
                   <label for="roleName" class="block text-sm font-medium text-gray-700 mb-1">
-                    角色名称 *
+                    {{$t('roles.roleName')}} *
                   </label>
                   <input
                     id="roleName"
@@ -35,7 +35,7 @@
 
                 <div>
                   <label for="roleDescription" class="block text-sm font-medium text-gray-700 mb-1">
-                    角色描述
+                    {{$t('roles.roleDescirption')}}
                   </label>
                   <textarea
                     id="roleDescription"
