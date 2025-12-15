@@ -19,8 +19,7 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly passwordService: PasswordService,
     private readonly cacheService: CacheService,
-  ) {
-  }
+  ) {}
 
   async login(loginInput: LoginInput): Promise<AuthPayload> {
     const authPayload = new AuthPayload();
@@ -77,7 +76,7 @@ export class AuthService {
     return crypto.createHash('md5').update(data).digest('hex');
   }
 
-    /**
+  /**
    * 将token存储到Redis中，key为session_<token>，有效期2小时
    * @param token 会话token
    * @param user 用户信息
@@ -87,9 +86,9 @@ export class AuthService {
     const value = JSON.stringify({
       userId: user.id,
       username: user.username,
-      roles: user.roles?.map(role => role.name) || []
+      roles: user.roles?.map((role) => role.name) || [],
     });
-    
+
     // 存储到Redis，设置过期时间为2小时（7200秒）
     await this.cacheService.redisClient.setEx(key, 7200, value);
   }
@@ -113,5 +112,4 @@ export class AuthService {
     const key = `session_${token}`;
     await this.cacheService.redisClient.del(key);
   }
-
 }

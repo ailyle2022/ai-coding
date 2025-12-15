@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -15,6 +20,7 @@ import { commonTypeDefs } from '../common.schema';
 import { CommonModule } from '../common/common.module';
 import { ProductStyleModule } from '../product-service/product-style.module';
 import { productStyleSchema } from '../product-service/product-style.schema';
+import { AuthMiddleware } from './auth.middleware';
 
 @Module({
   imports: [
@@ -22,7 +28,6 @@ import { productStyleSchema } from '../product-service/product-style.schema';
     UserModule,
     RoleModule,
     ProductStyleModule,
-    TypeOrmModule.forFeature([]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typeDefs: print(
@@ -35,9 +40,17 @@ import { productStyleSchema } from '../product-service/product-style.schema';
         ]),
       ),
       playground: true,
+      introspection: true,
     }),
+    TypeOrmModule.forFeature([]), // 这里应该包含实体，但现在是空的
   ],
-  providers: [AuthResolver, AuthService],
+  providers: [AuthResolver, AuthService, PasswordService],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
