@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
 import { User } from '../user/user.entity';
 import { PasswordService } from '../common/password.service';
+import { CacheService } from '../common/cache.service';
 import * as crypto from 'crypto';
 
 export interface LoginInput {
@@ -17,7 +18,9 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly passwordService: PasswordService,
-  ) {}
+    private readonly cacheService: CacheService,
+  ) {
+  }
 
   async login(loginInput: LoginInput): Promise<AuthPayload> {
     const authPayload = new AuthPayload();
@@ -46,6 +49,9 @@ export class AuthService {
       // 生成JWT令牌（这里简化处理，实际应使用JWT库生成）
       const token = this.generateToken(user);
 
+      // 将token存储到Redis中，key为session_<token>，有效期2小时
+      await this.storeToken(token, user);
+
       // 构建返回的用户信息
       const authUser = new AuthUser();
       authUser.id = user.id;
@@ -65,18 +71,47 @@ export class AuthService {
     }
   }
 
-  /**
-   * 用于生成密码哈希的方法，供后续注册新用户时使用
-   * @param password 明文密码
-   * @returns 哈希后的密码
-   */
-  async hashPasswordForStorage(password: string): Promise<string> {
-    return await this.passwordService.hashPassword(password);
-  }
-
   private generateToken(user: User): string {
     // 使用MD5生成基于用户信息和时间戳的token
     const data = `${user.id}${user.username}${Date.now()}${Math.random()}`;
     return crypto.createHash('md5').update(data).digest('hex');
   }
+
+    /**
+   * 将token存储到Redis中，key为session_<token>，有效期2小时
+   * @param token 会话token
+   * @param user 用户信息
+   */
+  async storeToken(token: string, user: User): Promise<void> {
+    const key = `session_${token}`;
+    const value = JSON.stringify({
+      userId: user.id,
+      username: user.username,
+      roles: user.roles?.map(role => role.name) || []
+    });
+    
+    // 存储到Redis，设置过期时间为2小时（7200秒）
+    await this.cacheService.redisClient.setEx(key, 7200, value);
+  }
+
+  /**
+   * 根据token获取用户会话信息
+   * @param token 会话token
+   * @returns 用户会话信息
+   */
+  async getUserSession(token: string): Promise<any> {
+    const key = `session_${token}`;
+    const value = await this.cacheService.redisClient.get(key);
+    return value ? JSON.parse(value.toString()) : null;
+  }
+
+  /**
+   * 删除用户会话
+   * @param token 会话token
+   */
+  async removeToken(token: string): Promise<void> {
+    const key = `session_${token}`;
+    await this.cacheService.redisClient.del(key);
+  }
+
 }
