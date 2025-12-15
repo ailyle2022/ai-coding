@@ -21,7 +21,15 @@ export class ProductStyleController {
   // REST API方法
   @Get()
   async findAll(): Promise<ProductStyle[]> {
-    return this.productStyleService.findAll();
+    this.logger.log('Fetching all product styles');
+    try {
+      const productStyles = await this.productStyleService.findAll();
+      this.logger.log(`Successfully fetched ${productStyles.length} product styles`);
+      return productStyles;
+    } catch (error) {
+      this.logger.error('Error fetching all product styles', error.stack);
+      throw error;
+    }
   }
 
   @Get(':id')
@@ -52,6 +60,7 @@ export class ProductStyleController {
   // gRPC 方法
   @GrpcMethod('ProductStyleService', 'FindAll')
   async grpcFindAll(data: Empty): Promise<iProductStyleList> {
+    this.logger.log('Fetching all product styles');
     const productStyles = await this.productStyleService.findAll();
     // 映射实体到 gRPC 响应格式
     const productStylesList = productStyles.map((style) => ({
