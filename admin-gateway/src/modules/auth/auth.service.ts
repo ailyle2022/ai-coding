@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
 import { User } from '../user/user.entity';
 import { PasswordService } from '../common/password.service';
+import * as crypto from 'crypto';
 
 export interface LoginInput {
   username: string;
@@ -74,17 +75,8 @@ export class AuthService {
   }
 
   private generateToken(user: User): string {
-    // 简化版token生成，实际应使用JWT库
-    // 这里仅为演示目的，不应在生产环境中使用
-    const payload = {
-      sub: user.id,
-      username: user.username,
-      roles: user.roles?.map((role) => role.name) || [],
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24小时过期
-    };
-
-    // 简单的Base64编码作为示例，实际应使用JWT签名
-    return Buffer.from(JSON.stringify(payload)).toString('base64');
+    // 使用MD5生成基于用户信息和时间戳的token
+    const data = `${user.id}${user.username}${Date.now()}${Math.random()}`;
+    return crypto.createHash('md5').update(data).digest('hex');
   }
 }
