@@ -55,7 +55,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
 
     try {
       // 创建队列
-      const queue = await this.channel.assertQueue('product_service_events', {
+      const queue = await this.channel.assertQueue('order_service_events', {
         durable: true,
       });
 
