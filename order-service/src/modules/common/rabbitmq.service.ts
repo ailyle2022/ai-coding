@@ -1,4 +1,9 @@
-import { Injectable, OnModuleInit, OnModuleDestroy, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  OnModuleDestroy,
+  Logger,
+} from '@nestjs/common';
 import * as amqp from 'amqplib';
 
 @Injectable()
@@ -14,16 +19,18 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
       const port = process.env.RABBITMQ_PORT || '5672';
       const username = process.env.RABBITMQ_USER || 'admin';
       const password = process.env.RABBITMQ_PASSWORD || 'admin_password';
-      
-      const connection = await amqp.connect(`amqp://${username}:${password}@${host}:${port}`);
+
+      const connection = await amqp.connect(
+        `amqp://${username}:${password}@${host}:${port}`,
+      );
       this.connection = connection as unknown as amqp.Connection;
-      
+
       // 创建通道
-      this.channel = await this.connection.createChannel();
-      
+      this.channel = await (this.connection as any).createChannel();
+
       // 确保交换机存在
       await this.channel.assertExchange('events', 'topic', { durable: true });
-      
+
       // 创建队列并绑定到交换机
       await this.setupEventListeners();
     } catch (error) {
@@ -36,7 +43,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
       await this.channel.close();
     }
     if (this.connection) {
-      await this.connection.close();
+      await (this.connection as any).close();
     }
   }
 
@@ -48,18 +55,20 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
 
     try {
       // 创建队列
-      const queue = await this.channel.assertQueue('product_service_events', { durable: true });
-      
+      const queue = await this.channel.assertQueue('product_service_events', {
+        durable: true,
+      });
+
       // 绑定队列到交换机，订阅helloEvent事件
       await this.channel.bindQueue(queue.queue, 'events', 'helloEvent');
-      
+
       // 开始消费消息
       await this.channel.consume(queue.queue, (msg) => {
         if (msg) {
           try {
             const event = JSON.parse(msg.content.toString());
             this.handleHelloEvent(event);
-            
+
             // 确认消息已被处理
             this.channel.ack(msg);
           } catch (error) {
@@ -69,7 +78,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
           }
         }
       });
-      
+
       this.logger.log('RabbitMQ event listeners set up successfully');
     } catch (error) {
       this.logger.error('Failed to set up event listeners:', error);
