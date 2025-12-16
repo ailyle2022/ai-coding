@@ -23,7 +23,7 @@ async function bootstrap() {
   app.useLogger(logger);
 
   await app.listen();
-  logger.log('Order Service is running on port 50051');
+  logger.log('Order Service is running on port 50052');
 }
 
 bootstrap();

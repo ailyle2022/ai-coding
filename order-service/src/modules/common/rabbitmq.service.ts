@@ -59,7 +59,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
         durable: true,
         maxLength: 10000,
         //messageTtl: 300000,            // Messages expire after 5 minutes (300,000 ms)
-        //expires: 600000,  
+        //expires: 600000,
       });
 
       // 绑定队列到交换机，订阅helloEvent事件

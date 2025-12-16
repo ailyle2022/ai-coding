@@ -11,10 +11,10 @@ export class SalesOrder {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'order_number',  unique: true })
+  @Column({ name: 'order_number', unique: true })
   orderNumber: string;
 
-  @Column({ name: 'orignal_order_number' , nullable: true })
+  @Column({ name: 'orignal_order_number', nullable: true })
   orignalOrderNumber: string;
 
   @Column({ name: 'order_type', nullable: true })

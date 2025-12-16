@@ -10,9 +10,9 @@ import { OrderModule } from './modules/order/order.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
-    CommonModule, 
-    LoggerModule, 
-    OrderModule
-  ]
+    CommonModule,
+    LoggerModule,
+    OrderModule,
+  ],
 })
 export class AppModule {}
