@@ -28,13 +28,13 @@ if (!fs.existsSync(logDir)) {
         format.splat(),
         format.json(),
       ),
-      defaultMeta: { service: 'product-service' },
+      defaultMeta: { service: 'order-service' },
       transports: [
         // 控制台输出
         new transports.Console({
           format: format.combine(
             format.colorize(),
-            nestWinstonModuleUtilities.format.nestLike('ProductService', {
+            nestWinstonModuleUtilities.format.nestLike('OrderService', {
               prettyPrint: true,
             }),
           ),

@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package order;
+
+service SalesOrderService {
+  rpc FindAll (Empty) returns (SalesOrderList) {}
+  rpc FindOne (OrderNumber) returns (SalesOrder) {}
+  rpc Create (CreateSalesOrderRequest) returns (SalesOrder) {}
+  rpc Update (UpdateSalesOrderRequest) returns (SalesOrder) {}
+  rpc Remove (OrderNumber) returns (RemoveResponse) {}
+}
+
+message Empty {}
+
+message OrderNumber {
+  string order_number = 1;
+}
+
+message SalesOrder {
+  int32 id = 1;
+  string order_number = 2;
+  string orignal_order_number = 3;
+  string order_type = 4;
+  string status = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message SalesOrderList {
+  repeated SalesOrder sales_orders = 1;
+}
+
+message CreateSalesOrderRequest {
+  string order_number = 1;
+  string orignal_order_number = 2;
+  string order_type = 3;
+  string status = 4;
+}
+
+message UpdateSalesOrderRequest {
+  string orignal_order_number = 1;
+  string order_type = 2;
+  string status = 3;
+}
+
+message RemoveResponse {
+  bool success = 1;
+}
