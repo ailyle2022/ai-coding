@@ -6,7 +6,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
   // 创建gRPC微服务
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+  const grpcApp = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
       transport: Transport.GRPC,
@@ -19,11 +19,20 @@ async function bootstrap() {
   );
 
   // 使用winston日志
-  const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
-  app.useLogger(logger);
+  const logger = grpcApp.get(WINSTON_MODULE_NEST_PROVIDER);
+  grpcApp.useLogger(logger);
 
-  await app.listen();
-  logger.log('Order Service is running on port 50052');
+  // 创建RESTful HTTP应用
+  const restApp = await NestFactory.create(AppModule);
+  restApp.useLogger(logger);
+  restApp.enableCors(); // Enable CORS for the RESTful API
+  
+  // 启动两个应用
+  await grpcApp.listen();
+  await restApp.listen(3002);
+  
+  logger.log('Order Service gRPC is running on port 50052');
+  logger.log('Order Service RESTful API is running on port 3002');
 }
 
 bootstrap();
