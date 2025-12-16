@@ -18,47 +18,6 @@ export class ProductStyleController {
 
   constructor(private readonly productStyleService: ProductStyleService) {}
 
-  // REST API方法
-  @Get()
-  async findAll(): Promise<ProductStyle[]> {
-    this.logger.log('Fetching all product styles');
-    try {
-      const productStyles = await this.productStyleService.findAll();
-      this.logger.log(
-        `Successfully fetched ${productStyles.length} product styles`,
-      );
-      return productStyles;
-    } catch (error) {
-      this.logger.error('Error fetching all product styles', error.stack);
-      throw error;
-    }
-  }
-
-  @Get(':id')
-  async findOne(@Param('id') id: number): Promise<ProductStyle> {
-    return this.productStyleService.findOne(id);
-  }
-
-  @Post()
-  async create(
-    @Body() productStyleData: Partial<ProductStyle>,
-  ): Promise<ProductStyle> {
-    return this.productStyleService.create(productStyleData);
-  }
-
-  @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() productStyleData: Partial<ProductStyle>,
-  ): Promise<ProductStyle> {
-    return this.productStyleService.update(id, productStyleData);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: number): Promise<void> {
-    return this.productStyleService.remove(id);
-  }
-
   // gRPC 方法
   @GrpcMethod('ProductStyleService', 'FindAll')
   async grpcFindAll(data: Empty): Promise<iProductStyleList> {
