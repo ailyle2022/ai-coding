@@ -28,7 +28,12 @@ export default {
     password: '密码',
     login: '登录',
     usernameRequired: '请输入用户名',
-    passwordRequired: '请输入密码'
+    passwordRequired: '请输入密码',
+    mfaCode: 'MFA 码',
+    mfaCodeDescription: '请输入 MFA 码',
+    mfaCodePlaceholder: '输入 MFA 码',
+    cancel: '取消',
+    verfiy: '验证',
   },
   users: {
     userList: '用户列表',
@@ -67,5 +72,22 @@ export default {
     recentActivity: '最近活动',
     adminLogin: '用户 Admin 登录系统',
     timeAgo: '{time}前'
+  },
+  mfa: {
+    setupTitle: '设置多因素认证',
+    setupDescription: '扫描下面的二维码，或者使用下面的密钥。',
+    settingUp: '设置中...',
+    setupMFA: '设置多因素认证',
+    scanQRCode: '扫描二维码',
+    orEnterKey: '或者输入密钥:',
+    back: '返回',
+    next: '下一步',
+    enterCode: '输入代码',
+    confirming: '确认中...',
+    confirm: '确认',
+    successTitle: '成功',
+    successMessage: 'MFA 设置成功！',
+    finish: '完成',
+    setupMFAInstruction: '请使用 Google Authenticator 等 MFA 应用程序，并使用下面的密钥进行设置。'
   }
 }

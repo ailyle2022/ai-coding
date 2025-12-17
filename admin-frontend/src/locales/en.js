@@ -28,7 +28,12 @@ export default {
     password: 'Password',
     login: 'Login',
     usernameRequired: 'Please enter username',
-    passwordRequired: 'Please enter password'
+    cancel: 'Cancel',
+    verfiy: 'Verify',
+    passwordRequired: 'Please enter password',
+    mfaCode: 'MFA Code',
+    mfaCodeDescription: 'Please enter MFA code',
+    mfaCodePlaceholder: 'Enter MFA code',
   },
   users: {
     userList: 'User List',
@@ -67,5 +72,22 @@ export default {
     recentActivity: 'Recent Activity',
     adminLogin: 'Admin user logged in',
     timeAgo: '{time} ago'
+  },
+  mfa: {
+    setupTitle: 'Setup Multi-Factor Authentication',
+    setupDescription: 'Scan the QR code below using your favorite authentication app. If you have trouble scanning the code, you can also enter the secret manually.',
+    settingUp: 'Setting up...',
+    setupMFA: 'Setup MFA',
+    scanQRCode: 'Scan QR Code',
+    orEnterKey: 'Or enter key:',
+    back: 'Back',
+    next: 'Next',
+    enterCode: 'Enter Code',
+    confirming: 'Confirming...',
+    confirm: 'Confirm',
+    successTitle: 'Success',
+    successMessage: 'MFA setup successful!',
+    finish: 'Finish',
+    setupMFAInstruction: 'Please use a Google Authenticator or similar MFA app to scan the QR code above. If you have trouble scanning the code, you can also enter the secret manually.'
   }
 }

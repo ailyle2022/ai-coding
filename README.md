@@ -21,14 +21,19 @@
 │       ├── store/         # 状态管理
 │       ├── utils/         # 工具函数
 │       └── views/         # 视图组件
-└── admin-gateway/         # NestJS 后台网关服务
-    └── src/               # 后端源码目录
-        ├── modules/       # 功能模块
-        │   └── auth/      # 认证模块
-        ├── controllers/   # 控制器
-        ├── services/      # 服务层
-        ├── models/        # 数据模型
-        └── main.ts        # 应用入口文件
+├── admin-gateway/         # NestJS 后台网关服务
+│   └── src/               # 后端源码目录
+│       ├── modules/       # 功能模块
+│       │   ├── auth/      # 认证模块
+│       │   ├── user/      # 用户模块
+│       │   ├── role/      # 角色模块
+│       │   └── product-style/ # 产品款式模块
+│       ├── controllers/   # 控制器
+│       ├── services/      # 服务层
+│       ├── models/        # 数据模型
+│       └── main.ts        # 应用入口文件
+├── product-service/       # 产品服务
+└── order-service/         # 订单服务
 ```
 
 ## API 接口文档
@@ -46,6 +51,9 @@ mutation Login($input: LoginInput!) {
       id
       username
     }
+    isSuccess
+    message
+    mfaChallengeId
   }
 }
 ```
@@ -60,7 +68,7 @@ mutation Login($input: LoginInput!) {
 }
 ```
 
-成功响应:
+成功响应(未启用MFA):
 ```json
 {
   "data": {
@@ -69,7 +77,142 @@ mutation Login($input: LoginInput!) {
       "user": {
         "id": 1,
         "username": "admin"
-      }
+      },
+      "isSuccess": true,
+      "message": "",
+      "mfaChallengeId": ""
+    }
+  }
+}
+```
+
+MFA验证响应(启用MFA):
+```json
+{
+  "data": {
+    "login": {
+      "token": "",
+      "user": null,
+      "isSuccess": false,
+      "message": "MFA_REQUIRED",
+      "mfaChallengeId": "challenge-id-string"
+    }
+  }
+}
+```
+
+### GraphQL MFA验证接口
+
+URL: `/graphql`
+
+Mutation:
+```
+mutation VerifyMFA($input: MFAVerifyInput!) {
+  verifyMFA(input: $input) {
+    token
+    user {
+      id
+      username
+    }
+    isSuccess
+    message
+  }
+}
+```
+
+变量:
+```json
+{
+  "input": {
+    "mfaChallengeId": "challenge-id-string",
+    "mfaCode": "123456"
+  }
+}
+```
+
+成功响应:
+```json
+{
+  "data": {
+    "verifyMFA": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.5fF9f2vYHQVyzmy6K0sJiMS7qNgqMV7w",
+      "user": {
+        "id": 1,
+        "username": "admin"
+      },
+      "isSuccess": true,
+      "message": ""
+    }
+  }
+}
+```
+
+### GraphQL MFA设置接口
+
+URL: `/graphql`
+
+Mutation:
+```
+mutation SetupMFA($userId: Int!) {
+  setupMFA(userId: $userId) {
+    secret
+    uri
+    mfaChallengeId
+  }
+}
+```
+
+变量:
+```json
+{
+  "userId": 1
+}
+```
+
+成功响应:
+```json
+{
+  "data": {
+    "setupMFA": {
+      "secret": "MFA_SECRET_KEY",
+      "uri": "otpauth://totp/AdminGateway:1?secret=MFA_SECRET_KEY&issuer=AdminGateway",
+      "mfaChallengeId": "challenge-id-string"
+    }
+  }
+}
+```
+
+### GraphQL MFA确认接口
+
+URL: `/graphql`
+
+Mutation:
+```
+mutation ConfirmMFA($input: MFAVerifyInput!) {
+  confirmMFA(input: $input) {
+    isSuccess
+    message
+  }
+}
+```
+
+变量:
+```json
+{
+  "input": {
+    "mfaChallengeId": "challenge-id-string",
+    "mfaCode": "123456"
+  }
+}
+```
+
+成功响应:
+```json
+{
+  "data": {
+    "confirmMFA": {
+      "isSuccess": true,
+      "message": "MFA setup completed successfully"
     }
   }
 }
@@ -105,3 +248,27 @@ mutation Login($input: LoginInput!) {
 - 创建了认证模块 (auth module)，包含服务和解析器
 - 用户名和密码均为 "admin" 时登录成功
 - 在 README 中添加了 GraphQL 接口文档
+
+### v0.5.0 (用户管理和角色管理功能)
+- 在 admin-gateway 中添加了用户管理模块
+- 在 admin-gateway 中添加了角色管理模块
+- 实现了用户的增删改查功能
+- 实现了角色的增删改查功能
+- 在 admin-frontend 中添加了对应的用户和角色管理界面
+
+### v0.6.0 (产品款式管理功能)
+- 在 admin-gateway 中添加了产品款式管理模块
+- 实现了产品款式的增删改查功能
+- 在 admin-frontend 中添加了对应的产品款式管理界面
+
+### v0.7.0 (多因素认证MFA功能)
+- 在 admin-gateway 中增强了认证模块，添加了MFA支持
+- 实现了登录时的MFA验证流程
+- 实现了MFA设置和绑定功能
+- 在 admin-frontend 中添加了MFA设置界面
+- 修复了MFA验证中的一些问题
+
+### v0.7.1 (MFA功能完善)
+- 修复了MFA设置页面的多语言支持问题
+- 完善了登录流程，支持MFA验证
+- 更新了相关API文档
