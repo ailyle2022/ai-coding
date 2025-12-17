@@ -33,7 +33,7 @@ export default {
     mfaCodeDescription: '请输入 MFA 码',
     mfaCodePlaceholder: '输入 MFA 码',
     cancel: '取消',
-    verfiy: '验证',
+    verify: '验证',
   },
   users: {
     userList: '用户列表',

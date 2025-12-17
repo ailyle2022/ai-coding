@@ -29,7 +29,7 @@ export default {
     login: 'Login',
     usernameRequired: 'Please enter username',
     cancel: 'Cancel',
-    verfiy: 'Verify',
+    verify: 'Verify',
     passwordRequired: 'Please enter password',
     mfaCode: 'MFA Code',
     mfaCodeDescription: 'Please enter MFA code',
