@@ -10,7 +10,8 @@ export default {
     roleManagement: 'Role Management',
     productStyles: 'Product Styles',
     logs: 'Logs',
-    admin: 'Admin'
+    admin: 'Admin',
+    mfaSetup: 'MFA Setup'
   },
   common: {
     status: 'Status',

@@ -10,7 +10,8 @@ export default {
     roleManagement: '角色管理',
     productStyles: '产品样式',
     logs: '日志查看',
-    admin: '超级管理员'
+    admin: '超级管理员',
+    mfaSetup: 'MFA 设置'
   },
   common: {
     status: '状态',
