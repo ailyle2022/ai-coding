@@ -22,4 +22,7 @@ export class AuthPayload {
 
   @Field({ nullable: true })
   message: string;
+  
+  @Field({ nullable: true })
+  mfaChallengeId: string;
 }

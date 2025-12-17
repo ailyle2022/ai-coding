@@ -62,4 +62,13 @@ export class User {
     },
   })
   roles: Role[];
+  
+  // MFA fields
+  @Field({ nullable: true })
+  @Column({ name: 'mfa_secret', nullable: true })
+  mfaSecret: string;
+
+  @Field({ nullable: true })
+  @Column({ name: 'mfa_enabled', default: false })
+  mfaEnabled: boolean;
 }

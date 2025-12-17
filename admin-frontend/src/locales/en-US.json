@@ -1,0 +1,74 @@
+{
+  "login": {
+    "login": "Login",
+    "username": "Username",
+    "password": "Password",
+    "usernameRequired": "Please enter your username",
+    "passwordRequired": "Please enter your password"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "userManagement": "User Management",
+    "roleManagement": "Role Management",
+    "productStyles": "Product Styles"
+  },
+  "user": {
+    "userList": "User List",
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "username": "Username",
+    "email": "Email",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "active": "Active",
+    "inactive": "Inactive",
+    "status": "Status",
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "confirmDelete": "Confirm Delete",
+    "deleteConfirmation": "Are you sure you want to delete user {username}?",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "role": {
+    "roleList": "Role List",
+    "addRole": "Add Role",
+    "editRole": "Edit Role",
+    "name": "Role Name",
+    "description": "Description",
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "productStyle": {
+    "productStyleList": "Product Style List",
+    "addProductStyle": "Add Product Style",
+    "editProductStyle": "Edit Product Style",
+    "name": "Name",
+    "description": "Description",
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "mfa": {
+    "setupTitle": "Set Up Two-Factor Authentication",
+    "setupDescription": "Set up two-factor authentication to enhance account security",
+    "setupMFAInstruction": "Click the button below to start setting up two-factor authentication",
+    "setupMFA": "Set Up Two-Factor Authentication",
+    "settingUp": "Setting Up...",
+    "scanQRCode": "Scan this QR code with your authenticator app",
+    "orEnterKey": "Or manually enter the following key",
+    "next": "Next",
+    "enterCode": "Enter Verification Code",
+    "codePlaceholder": "6-digit code",
+    "back": "Back",
+    "confirm": "Confirm",
+    "confirming": "Confirming...",
+    "successTitle": "Setup Successful!",
+    "successMessage": "You have successfully set up two-factor authentication. Your account is now more secure.",
+    "finish": "Finish"
+  }
+}

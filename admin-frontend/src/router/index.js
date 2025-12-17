@@ -31,6 +31,12 @@ const routes = [
     name: 'ProductStyleList',
     component: () => import('../views/ProductStyleList.vue'),
     meta: { layout: 'with-sidebar' }
+  },
+  {
+    path: '/mfa-setup',
+    name: 'MFASetup',
+    component: () => import('../views/MFASetup.vue'),
+    meta: { layout: 'without-sidebar' }
   }
 ]
 
@@ -46,7 +52,7 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = authStore.getAuthToken()
 
   // 如果访问需要认证的页面但未登录，则重定向到登录页
-  if (to.name !== 'Login' && !isAuthenticated) {
+  if (to.name !== 'Login' && to.name !== 'MFASetup' && !isAuthenticated) {
     next({ name: 'Login' })
   } else {
     next()

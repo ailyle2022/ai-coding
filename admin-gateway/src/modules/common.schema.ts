@@ -20,7 +20,6 @@ export const commonTypeDefs = gql`
     isActive: Boolean!
     createdAt: String!
     updatedAt: String!
-    roles: [Role!]
   }
 
   type Role {
@@ -47,7 +46,6 @@ export const commonTypeDefs = gql`
     firstName: String
     lastName: String
     isActive: Boolean
-    roleIds: [Int!]
   }
 
   input UpdateUserInput {
@@ -56,12 +54,16 @@ export const commonTypeDefs = gql`
     firstName: String
     lastName: String
     isActive: Boolean
-    roleIds: [Int!]
   }
-
+  
+  type AuthUser {
+    id: Int!
+    username: String!
+  }
+  
   type AuthPayload {
     token: String!
-    user: User
+    user: AuthUser
     isSuccess: Boolean!
     message: String
   }
@@ -69,5 +71,13 @@ export const commonTypeDefs = gql`
   input LoginInput {
     username: String!
     password: String!
+  }
+  
+  type Query {
+    _: Boolean
+  }
+  
+  type Mutation {
+    _: Boolean
   }
 `;
