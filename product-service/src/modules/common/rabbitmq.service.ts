@@ -15,11 +15,13 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
       const username = process.env.RABBITMQ_USER || 'admin';
       const password = process.env.RABBITMQ_PASSWORD || 'admin_password';
       
-      const connection = await amqp.connect(`amqp://${username}:${password}@${host}:${port}`);
+      const connection = await amqp.connect(
+        `amqp://${username}:${password}@${host}:${port}`,
+      );
       this.connection = connection as unknown as amqp.Connection;
       
       // 创建通道
-      this.channel = await this.connection.createChannel();
+      this.channel = await (this.connection as any).createChannel();
       
       // 确保交换机存在
       await this.channel.assertExchange('events', 'topic', { durable: true });
@@ -36,7 +38,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
       await this.channel.close();
     }
     if (this.connection) {
-      await this.connection.close();
+      await (this.connection as any).close();
     }
   }
 
