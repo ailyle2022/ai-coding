@@ -20,6 +20,7 @@ export const commonTypeDefs = gql`
     isActive: Boolean!
     createdAt: String!
     updatedAt: String!
+    roles: [Role!]
   }
 
   type Role {
