@@ -33,8 +33,25 @@
 │       ├── models/        # 数据模型
 │       └── main.ts        # 应用入口文件
 ├── product-service/       # 产品服务
-└── order-service/         # 订单服务
+├── order-service/         # 订单服务
+└── docker-compose.yml     # Docker编排文件
 ```
+
+## 技术栈详情
+
+### 核心技术栈
+- 前端：Vue3 + Apollo Client + TailwindCSS
+- 后端：NestJS + GraphQL + TypeORM
+- 数据库：PostgreSQL
+- 缓存：Redis
+- 消息队列：RabbitMQ
+- 任务队列：BullMQ
+- 容器化：Docker + Docker Compose
+
+### 微服务架构
+- admin-gateway：管理后台网关服务
+- product-service：产品管理服务
+- order-service：订单管理服务
 
 ## API 接口文档
 
@@ -218,6 +235,18 @@ mutation ConfirmMFA($input: MFAVerifyInput!) {
 }
 ```
 
+## 消息队列系统
+
+### RabbitMQ
+- 用于服务间异步通信
+- 实现事件发布/订阅模式
+- 支持广播消息到多个服务
+
+### BullMQ
+- 用于任务队列处理
+- 支持延迟任务、重试机制
+- 提供任务监控和管理界面
+
 ## 需求记录
 
 ### 初始需求
@@ -272,3 +301,10 @@ mutation ConfirmMFA($input: MFAVerifyInput!) {
 - 修复了MFA设置页面的多语言支持问题
 - 完善了登录流程，支持MFA验证
 - 更新了相关API文档
+
+### v0.8.0 (消息队列系统集成)
+- 集成RabbitMQ用于服务间异步通信
+- 集成BullMQ用于任务队列处理
+- 在order-service中实现基于BullMQ的任务处理机制
+- 在admin-gateway中实现基于RabbitMQ的事件发布机制
+- 更新了项目技术栈和架构说明
