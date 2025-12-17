@@ -345,7 +345,8 @@ export default {
           email: form.email || null,
           firstName: form.firstName || null,
           lastName: form.lastName || null,
-          isActive: form.isActive
+          isActive: form.isActive,
+          roleIds: form.roleIds // 添加角色ID数组
         }
 
         if (!isEditing.value) {

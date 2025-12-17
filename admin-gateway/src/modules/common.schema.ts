@@ -47,6 +47,7 @@ export const commonTypeDefs = gql`
     firstName: String
     lastName: String
     isActive: Boolean
+    roleIds: [Int!]
   }
 
   input UpdateUserInput {
@@ -55,6 +56,7 @@ export const commonTypeDefs = gql`
     firstName: String
     lastName: String
     isActive: Boolean
+    roleIds: [Int!]
   }
   
   type AuthUser {
