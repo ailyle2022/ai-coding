@@ -3,7 +3,6 @@
     <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-gray-900">{{ $t('login.login') }}</h2>
-        <p class="text-gray-500 mt-2">{{ $t('message.hello') }}</p>
       </div>
 
       <form @submit.prevent="handleLogin" class="space-y-6">

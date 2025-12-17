@@ -14,13 +14,13 @@
           <div class="sm:flex sm:items-start">
             <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
               <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                {{ isEditing ? '编辑产品样式' : '新增产品样式' }}
+                {{ isEditing ? $t('productStyles.editProductStyle') : $t('productStyles.addProductStyle') }}
               </h3>
 
               <div class="mt-4 space-y-4">
                 <div>
                   <label for="productStyleName" class="block text-sm font-medium text-gray-700 mb-1">
-                    产品样式名称 *
+                    {{$t('productStyles.name')}} *
                   </label>
                   <input
                     id="productStyleName"
@@ -35,7 +35,7 @@
 
                 <div>
                   <label for="productStyleDescription" class="block text-sm font-medium text-gray-700 mb-1">
-                    产品样式描述
+                    {{$t('productStyles.description')}}
                   </label>
                   <textarea
                     id="productStyleDescription"
@@ -55,7 +55,7 @@
                     class="h-4 w-4 text-primary-accent focus:ring-blue-500 border-gray-300 rounded"
                   >
                   <label for="productStyleIsActive" class="ml-2 block text-sm text-gray-700">
-                    激活状态
+                    {{$t('common.status')}}
                   </label>
                 </div>
               </div>
@@ -70,7 +70,7 @@
             @click="handleSubmit"
             class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-primary-accent text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
           >
-            {{ loading ? '保存中...' : '保存' }}
+            {{ loading ? $t('common.saving') : $t('common.save') }}
           </button>
           <button
             type="button"
@@ -78,7 +78,7 @@
             @click="$emit('close')"
             class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
           >
-            取消
+            {{ $t('common.cancel') }}
           </button>
         </div>
       </div>

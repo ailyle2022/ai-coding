@@ -18,7 +18,10 @@ export default {
     edit: '编辑',
     delete: '删除',
     enable: '启用',
-    disable: '禁用'
+    disable: '禁用',
+    save: '保存',
+    saving: '保存中...',
+    cancel: '取消'
   },
   login: {
     username: '用户名',
@@ -59,7 +62,6 @@ export default {
     deleteProductStyle: '删除产品样式',
     name: '名称',
     description: '描述',
-    status: '状态'
   },
   dashboard: {
     recentActivity: '最近活动',

@@ -18,7 +18,10 @@ export default {
     edit: 'Edit',
     delete: 'Delete',
     enable: 'Enable',
-    disable: 'Disable'
+    disable: 'Disable',
+    save: 'Save',
+    saving: 'Saving...',
+    cancel: 'Cancel'
   },
   login: {
     username: 'Username',
@@ -59,7 +62,6 @@ export default {
     deleteProductStyle: 'Delete Product Style',
     name: 'Name',
     description: 'Description',
-    status: 'Status'
   },
   dashboard: {
     recentActivity: 'Recent Activity',

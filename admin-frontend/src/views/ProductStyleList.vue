@@ -34,7 +34,7 @@
           @click="addProductStyle"
           class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md text-sm"
         >
-          + 新增产品样式
+          + {{$t('productStyles.addProductStyle')}}
         </button>
       </div>
     </div>
@@ -43,10 +43,10 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">产品样式名称</th>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">产品样式描述</th>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">状态</th>
-          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">操作</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">{{$t('productStyles.name')}}</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">{{$t('productStyles.description')}}</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">{{$t('common.status')}}</th>
+          <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">{{$t('common.actions')}}</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -58,7 +58,7 @@
               class="px-3 inline-flex text-sm leading-5 font-semibold rounded-full"
               :class="productStyle.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
             >
-              {{ productStyle.isActive ? '启用' : '禁用' }}
+              {{ productStyle.isActive ? $t('common.enable') : $t('common.disable') }}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -66,13 +66,13 @@
               @click="editProductStyle(productStyle)"
               class="text-primary-accent hover:text-blue-900 mr-4 text-sm"
             >
-              编辑
+               {{ $t('common.edit') }}
             </button>
             <button
               @click="deleteProductStyle(productStyle)"
               class="text-red-500 hover:text-red-700 text-sm"
             >
-              删除
+              {{ $t('common.delete') }}
             </button>
           </td>
         </tr>
