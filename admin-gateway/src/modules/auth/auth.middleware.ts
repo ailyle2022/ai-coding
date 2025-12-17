@@ -17,9 +17,11 @@ export class AuthMiddleware implements NestMiddleware {
         // 检查是否是登录相关的操作
         const isLoginOperation = body.query.includes('login');
         const isVerifyMFA = body.query.includes('verifyMFA');
+        const isGetUsers = body.query.includes('users');
+        const isGetRoles = body.query.includes('roles');
 
-        // 如果是登录操作，则跳过认证
-        if (isLoginOperation || isVerifyMFA) {
+        // 如果是登录操作或获取用户/角色列表，则跳过认证
+        if (isLoginOperation || isVerifyMFA || isGetUsers || isGetRoles) {
           return next();
         }
       }
