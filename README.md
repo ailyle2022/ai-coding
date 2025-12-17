@@ -47,6 +47,7 @@
 - 消息队列：RabbitMQ
 - 任务队列：BullMQ
 - 容器化：Docker + Docker Compose
+- 日志系统：Winston
 
 ### 微服务架构
 - admin-gateway：管理后台网关服务
@@ -235,6 +236,44 @@ mutation ConfirmMFA($input: MFAVerifyInput!) {
 }
 ```
 
+## 日志系统
+
+项目使用 Winston 作为日志框架，结合 nest-winston 实现 NestJS 与 Winston 的无缝集成。日志系统具有以下特点：
+
+### 功能特性
+- 多级别日志记录（error、warn、info、debug）
+- 控制台彩色输出（开发环境）
+- 文件日志记录，支持按天轮转
+- 错误日志单独存储，包含完整堆栈信息
+- JSON 格式日志，便于集中收集和分析
+- 可配置的日志级别
+
+### 配置详情
+- 日志目录：`logs/`（自动创建）
+- 错误日志文件：`error-%DATE%.log`
+- 综合日志文件：`combined-%DATE%.log`
+- 日志文件轮转：按天轮转，保留最近2个文件
+- 文件大小限制：每个日志文件最大1KB
+- 默认日志级别：info（可通过LOG_LEVEL环境变量调整）
+
+### 使用方式
+在服务中注入日志记录器：
+```typescript
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Inject, Injectable } from '@nestjs/common';
+import { Logger } from 'winston';
+
+@Injectable()
+export class MyService {
+  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) {}
+
+  myMethod() {
+    this.logger.info('This is an info message');
+    this.logger.error('This is an error message', { trace: 'some error trace' });
+  }
+}
+```
+
 ## 消息队列系统
 
 ### RabbitMQ
@@ -307,4 +346,10 @@ mutation ConfirmMFA($input: MFAVerifyInput!) {
 - 集成BullMQ用于任务队列处理
 - 在order-service中实现基于BullMQ的任务处理机制
 - 在admin-gateway中实现基于RabbitMQ的事件发布机制
+- 更新了项目技术栈和架构说明
+
+### v0.9.0 (日志系统集成)
+- 集成Winston日志框架，提供统一的日志记录能力
+- 在order-service中实现完整的日志配置，包括控制台输出和文件记录
+- 支持日志级别控制、文件轮转和错误日志分离
 - 更新了项目技术栈和架构说明
