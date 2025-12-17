@@ -5,7 +5,8 @@
         <h2 class="text-3xl font-bold text-gray-900">{{ $t('login.login') }}</h2>
       </div>
 
-      <form @submit.prevent="handleLogin" class="space-y-6">
+      <!-- 第一步：用户名和密码登录 -->
+      <form v-if="!showMFA" @submit.prevent="handleLogin" class="space-y-6">
         <div>
           <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('login.username') }}</label>
           <input
@@ -39,6 +40,40 @@
         </button>
       </form>
 
+      <!-- 第二步：MFA验证 -->
+      <form v-else @submit.prevent="handleMFAVerify" class="space-y-6">
+        <div>
+          <label for="mfaCode" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('login.mfaCode') }}</label>
+          <input
+            id="mfaCode"
+            v-model="mfaForm.mfaCode"
+            type="text"
+            :placeholder="$t('login.mfaCodePlaceholder')"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-accent focus:border-primary-accent transition duration-150"
+            maxlength="6"
+          />
+          <p class="mt-2 text-sm text-gray-500">{{ $t('login.mfaCodeDescription') }}</p>
+        </div>
+
+        <div class="flex space-x-4">
+          <button
+            type="button"
+            @click="cancelMFA"
+            class="flex-1 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-lg transition duration-150"
+          >
+            {{ $t('login.cancel') }}
+          </button>
+          <button
+            type="submit"
+            class="flex-1 py-2 bg-primary-accent hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-150 shadow-md"
+            :disabled="loading"
+          >
+            {{ loading ? $t('login.verifying') : $t('login.verify') }}
+          </button>
+        </div>
+      </form>
+
       <div v-if="errorMessage" class="mt-6 p-4 bg-red-50 text-red-700 rounded-lg">
         {{ errorMessage }}
       </div>
@@ -64,8 +99,14 @@ export default {
       password: ''
     })
 
+    const mfaForm = reactive({
+      mfaCode: ''
+    })
+
     const errorMessage = ref('')
     const loading = ref(false)
+    const showMFA = ref(false)
+    const mfaChallengeId = ref('')
 
     // 定义登录mutation
     const LOGIN_MUTATION = gql`
@@ -78,11 +119,28 @@ export default {
           }
           isSuccess
           message
+          mfaChallengeId
+        }
+      }
+    `
+
+    // 定义MFA验证mutation
+    const VERIFY_MFA_MUTATION = gql`
+      mutation VerifyMFA($input: MFAVerifyInput!) {
+        verifyMFA(input: $input) {
+          token
+          user {
+            id
+            username
+          }
+          isSuccess
+          message
         }
       }
     `
 
     const { mutate: login, loading: loginLoading, onError } = useMutation(LOGIN_MUTATION)
+    const { mutate: verifyMFA } = useMutation(VERIFY_MFA_MUTATION)
 
     // 监听登录错误
     onError((error) => {
@@ -115,8 +173,16 @@ export default {
           localStorage.setItem('user', JSON.stringify(result.data.login.user))
           router.push('/')
         } else {
-          // 登录失败，显示错误信息
-          errorMessage.value = result.data.login.message || '登录失败'
+          // 检查是否需要MFA验证
+          if (result.data.login.message === 'MFA_REQUIRED' && result.data.login.mfaChallengeId) {
+            // 显示MFA验证界面
+            showMFA.value = true
+            mfaChallengeId.value = result.data.login.mfaChallengeId
+            mfaForm.mfaCode = ''
+          } else {
+            // 其他登录失败情况
+            errorMessage.value = result.data.login.message || '登录失败'
+          }
         }
       } catch (error) {
         loading.value = false
@@ -124,11 +190,56 @@ export default {
       }
     }
 
+    const handleMFAVerify = async () => {
+      if (!mfaForm.mfaCode || mfaForm.mfaCode.length !== 6) {
+        errorMessage.value = '请输入6位验证码'
+        return
+      }
+
+      loading.value = true
+      errorMessage.value = ''
+
+      try {
+        const result = await verifyMFA({
+          input: {
+            mfaChallengeId: mfaChallengeId.value,
+            mfaCode: mfaForm.mfaCode
+          }
+        })
+
+        loading.value = false
+
+        if (result.data.verifyMFA.isSuccess) {
+          // MFA验证成功，保存token并跳转到首页
+          authStore.setAuthToken(result.data.verifyMFA.token)
+          localStorage.setItem('user', JSON.stringify(result.data.verifyMFA.user))
+          router.push('/')
+        } else {
+          // MFA验证失败
+          errorMessage.value = result.data.verifyMFA.message || '验证失败'
+        }
+      } catch (error) {
+        loading.value = false
+        errorMessage.value = error.message || '网络错误，请稍后重试'
+      }
+    }
+
+    const cancelMFA = () => {
+      showMFA.value = false
+      mfaForm.mfaCode = ''
+      mfaChallengeId.value = ''
+      errorMessage.value = ''
+    }
+
     return {
       loginForm,
+      mfaForm,
       errorMessage,
       loading: loginLoading,
-      handleLogin
+      showMFA,
+      handleLogin,
+      handleMFAVerify,
+      cancelMFA
     }
   }
 }

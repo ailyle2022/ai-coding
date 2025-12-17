@@ -4,7 +4,13 @@
     "username": "用户名",
     "password": "密码",
     "usernameRequired": "请输入用户名",
-    "passwordRequired": "请输入密码"
+    "passwordRequired": "请输入密码",
+    "mfaCode": "双重认证码",
+    "mfaCodePlaceholder": "6位验证码",
+    "mfaCodeDescription": "请输入您的身份验证应用生成的6位验证码",
+    "cancel": "取消",
+    "verify": "验证",
+    "verifying": "验证中..."
   },
   "sidebar": {
     "dashboard": "仪表板",
