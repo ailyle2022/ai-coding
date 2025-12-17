@@ -56,7 +56,7 @@
                     type="email"
                     v-model="form.email"
                     :class="{'border-red-500': errors.email, 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-accent focus:border-primary-accent': true}"
-                    placeholder="请输入邮箱"
+                    placeholder="请输入邮箱地址"
                   >
                   <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
                 </div>
@@ -71,7 +71,7 @@
                       type="text"
                       v-model="form.firstName"
                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-accent focus:border-primary-accent"
-                      placeholder="名"
+                      placeholder="请输入名字"
                     >
                   </div>
 
@@ -84,68 +84,74 @@
                       type="text"
                       v-model="form.lastName"
                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-accent focus:border-primary-accent"
-                      placeholder="姓"
+                      placeholder="请输入姓氏"
                     >
                   </div>
                 </div>
 
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
-                    {{ $t('common.status')}}
+                    {{ $t('users.role')}}
                   </label>
-                  <div class="flex items-center">
-                    <label class="inline-flex items-center">
+                  
+                  <!-- 角色加载状态 -->
+                  <div v-if="rolesLoading" class="py-2 text-center text-gray-500">
+                    <div class="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-primary-accent"></div>
+                    <span class="ml-2">加载角色中...</span>
+                  </div>
+                  
+                  <!-- 角色加载错误 -->
+                  <div v-else-if="rolesError" class="py-2 text-red-500 text-sm">
+                    {{ rolesError }}
+                  </div>
+                  
+                  <!-- 角色选择 -->
+                  <div v-else class="space-y-2 max-h-40 overflow-y-auto p-2 border border-gray-200 rounded-lg">
+                    <div v-for="role in roles" :key="role.id" class="flex items-center">
                       <input
-                        type="radio"
-                        v-model="form.isActive"
-                        :value="true"
-                        class="text-primary-accent focus:ring-primary-accent"
+                        :id="'role-' + role.id"
+                        type="checkbox"
+                        :value="role.id"
+                        v-model="form.roleIds"
+                        class="h-4 w-4 text-primary-accent focus:ring-primary-accent border-gray-300 rounded"
                       >
-                      <span class="ml-2">{{ $t('common.enable')}}</span>
-                    </label>
-                    <label class="inline-flex items-center ml-6">
-                      <input
-                        type="radio"
-                        v-model="form.isActive"
-                        :value="false"
-                        class="text-primary-accent focus:ring-primary-accent"
-                      >
-                      <span class="ml-2">{{ $t('common.disable')}}</span>
-                    </label>
+                      <label :for="'role-' + role.id" class="ml-2 block text-sm text-gray-700">
+                        {{ role.name }}
+                      </label>
+                    </div>
+                    
+                    <div v-if="roles && roles.length === 0" class="text-gray-500 text-sm py-2 text-center">
+                      暂无角色可分配
+                    </div>
                   </div>
                 </div>
 
-                <!-- 角色选择 -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    {{ $t('users.role')}}
+                <div class="flex items-center">
+                  <input
+                    id="isActive"
+                    type="checkbox"
+                    v-model="form.isActive"
+                    class="h-4 w-4 text-primary-accent focus:ring-primary-accent border-gray-300 rounded"
+                  >
+                  <label for="isActive" class="ml-2 block text-sm text-gray-700">
+                    {{ $t('common.enable') }}
                   </label>
-                  <div class="border border-gray-300 rounded-lg p-3 max-h-40 overflow-y-auto">
-                    <div v-if="rolesLoading" class="text-center text-gray-500 py-2">
-                      加载角色中...
-                    </div>
-                    <div v-else-if="rolesError" class="text-center text-red-500 py-2">
-                      {{ rolesError }}
-                    </div>
-                    <div v-else>
-                      <label
-                        v-for="role in roles"
-                        :key="role.id"
-                        class="flex items-center py-1"
-                      >
-                        <input
-                          type="checkbox"
-                          :value="role.id"
-                          v-model="form.roleIds"
-                          class="h-4 w-4 text-primary-accent focus:ring-primary-accent border-gray-300 rounded"
-                        >
-                        <span class="ml-2 text-sm text-gray-700">{{ role.name }}</span>
-                      </label>
-                    </div>
-                  </div>
-                  <p v-if="errors.roleIds" class="mt-1 text-sm text-red-600">{{ errors.roleIds }}</p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 错误信息 -->
+        <div v-if="errors.general || createError || updateError" class="px-6 py-2 bg-red-50 border-t border-red-100">
+          <div class="flex items-center">
+            <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                {{ errors.general || createError || updateError }}
+              </h3>
             </div>
           </div>
         </div>
@@ -153,16 +159,20 @@
         <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
           <button
             type="button"
-            :disabled="loading"
-            @click="handleSubmit"
+            :disabled="createLoading || updateLoading"
+            @click="saveUser"
             class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-primary-accent text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
           >
-            {{ loading ? $t('common.saving') : $t('common.save') }}
+            <span v-if="createLoading || updateLoading" class="flex items-center">
+              <div class="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+              {{ $t('common.saving') }}
+            </span>
+            <span v-else>{{ $t('common.save') }}</span>
           </button>
           <button
             type="button"
-            :disabled="loading"
-            @click="$emit('close')"
+            :disabled="createLoading || updateLoading"
+            @click="closeModal"
             class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
           >
             {{ $t('common.cancel') }}
@@ -174,9 +184,10 @@
 </template>
 
 <script>
-import { ref, reactive, watch, onMounted } from 'vue'
-import { useMutation } from '@vue/apollo-composable'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { useQuery, useMutation } from '@vue/apollo-composable'
 import { gql } from 'graphql-tag'
+import { useAuthStore } from '@/store/auth'
 
 export default {
   name: 'EditUserModal',
@@ -187,10 +198,10 @@ export default {
     }
   },
   emits: ['close', 'saved'],
-  setup (props, { emit }) {
-    // 是否为编辑模式
-    const isEditing = ref(!!props.user)
-
+  setup(props, { emit }) {
+    // 使用认证存储获取token
+    const authStore = useAuthStore()
+    
     // 表单数据
     const form = reactive({
       username: '',
@@ -202,21 +213,26 @@ export default {
       roleIds: []
     })
 
-    // 错误信息
+    // 表单错误
     const errors = reactive({
       username: '',
       password: '',
       email: '',
-      roleIds: ''
+      general: ''
     })
 
-    // 加载状态
-    const loading = ref(false)
+    // 是否处于编辑模式
+    const isEditing = computed(() => !!props.user)
 
-    // 角色相关状态
-    const roles = ref([])
-    const rolesLoading = ref(false)
-    const rolesError = ref(null)
+    // GraphQL查询角色列表
+    const ROLES_QUERY = gql`
+      query GetRoles {
+        roles {
+          id
+          name
+        }
+      }
+    `
 
     // GraphQL创建用户mutation
     const CREATE_USER_MUTATION = gql`
@@ -228,7 +244,6 @@ export default {
           firstName
           lastName
           isActive
-          createdAt
           roles {
             id
             name
@@ -239,7 +254,7 @@ export default {
 
     // GraphQL更新用户mutation
     const UPDATE_USER_MUTATION = gql`
-      mutation UpdateUser($id: Int!, $input: UpdateUserInput!) {
+      mutation UpdateUser($id: Int!, $input: UpdateUserInput) {
         updateUser(id: $id, input: $input) {
           id
           username
@@ -247,7 +262,6 @@ export default {
           firstName
           lastName
           isActive
-          createdAt
           roles {
             id
             name
@@ -256,56 +270,30 @@ export default {
       }
     `
 
-    const { mutate: createUser, loading: createLoading, onDone: onCreateDone, onError: onCreateError } = useMutation(CREATE_USER_MUTATION)
-    const { mutate: updateUser, loading: updateLoading, onDone: onUpdateDone, onError: onUpdateError } = useMutation(UPDATE_USER_MUTATION)
+    // 使用Apollo查询角色列表
+    const { result: rolesResult, loading: rolesLoading, error: rolesError } = useQuery(ROLES_QUERY)
 
-    // 监听加载状态
-    watch([createLoading, updateLoading], ([isCreating, isUpdating]) => {
-      loading.value = isCreating || isUpdating
-    })
+    // 使用Apollo创建用户
+    const { 
+      mutate: createUserMutation, 
+      loading: createLoading, 
+      error: createError,
+      onDone: onCreateDone
+    } = useMutation(CREATE_USER_MUTATION)
 
-    // 获取角色列表
-    const loadRoles = async () => {
-      rolesLoading.value = true
-      rolesError.value = null
+    // 使用Apollo更新用户
+    const { 
+      mutate: updateUserMutation, 
+      loading: updateLoading, 
+      error: updateError,
+      onDone: onUpdateDone
+    } = useMutation(UPDATE_USER_MUTATION)
 
-      try {
-        const response = await fetch('http://localhost:3000/graphql', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            query: `
-              query GetRoles {
-                roles {
-                  id
-                  name
-                }
-              }
-            `
-          })
-        })
-
-        const result = await response.json()
-        if (result.data && result.data.roles) {
-          roles.value = result.data.roles
-        } else if (result.errors) {
-          rolesError.value = '加载角色失败'
-          console.error('加载角色失败:', result.errors)
-        }
-      } catch (err) {
-        rolesError.value = '网络错误，请稍后重试'
-        console.error('加载角色失败:', err)
-      } finally {
-        rolesLoading.value = false
-      }
-    }
+    // 角色数据
+    const roles = computed(() => rolesResult.value?.roles || [])
 
     // 初始化表单数据
     onMounted(() => {
-      loadRoles()
-
       if (props.user) {
         form.username = props.user.username
         form.email = props.user.email || ''
@@ -320,135 +308,117 @@ export default {
       }
     })
 
-    // 验证表单
-    const validateForm = () => {
-      // 清除之前的错误
+    // 清除错误
+    const clearErrors = () => {
       errors.username = ''
       errors.password = ''
       errors.email = ''
-      errors.roleIds = ''
+      errors.general = ''
+    }
 
+    // 表单验证
+    const validateForm = () => {
+      clearErrors()
+      
       let isValid = true
-
-      // 验证用户名
-      if (!form.username || form.username.trim() === '') {
+      
+      if (!form.username.trim()) {
         errors.username = '用户名不能为空'
         isValid = false
-      } else if (form.username.trim().length > 50) {
-        errors.username = '用户名长度不能超过50个字符'
+      }
+      
+      if (!isEditing.value && !form.password.trim()) {
+        errors.password = '密码不能为空'
         isValid = false
       }
-
-      // 验证密码（仅在创建时需要）
-      if (!isEditing.value) {
-        if (!form.password || form.password.trim() === '') {
-          errors.password = '密码不能为空'
-          isValid = false
-        } else if (form.password.length < 6) {
-          errors.password = '密码长度不能少于6个字符'
-          isValid = false
-        }
-      }
-
-      // 验证邮箱格式
-      if (form.email && form.email.trim() !== '') {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(form.email.trim())) {
-          errors.email = '邮箱格式不正确'
-          isValid = false
-        } else if (form.email.trim().length > 100) {
-          errors.email = '邮箱长度不能超过100个字符'
-          isValid = false
-        }
-      }
-
+      
       return isValid
     }
 
-    // 提交表单
-    const handleSubmit = async () => {
-      if (!validateForm()) {
-        return
-      }
+    // 保存用户
+    const saveUser = async () => {
+      if (!validateForm()) return
 
       try {
-        if (isEditing.value) {
-          // 更新用户
-          const result = await updateUser({
-            id: props.user.id,
-            input: {
-              username: form.username.trim(),
-              email: form.email.trim() || undefined,
-              firstName: form.firstName.trim() || undefined,
-              lastName: form.lastName.trim() || undefined,
-              isActive: form.isActive,
-              roleIds: form.roleIds
-            }
-          })
+        const userData = {
+          username: form.username,
+          email: form.email || null,
+          firstName: form.firstName || null,
+          lastName: form.lastName || null,
+          isActive: form.isActive
+        }
 
-          if (result.data?.updateUser) {
-            emit('saved', result.data.updateUser)
-          }
-        } else {
-          // 创建用户
-          const result = await createUser({
-            input: {
-              username: form.username.trim(),
-              password: form.password,
-              email: form.email.trim() || undefined,
-              firstName: form.firstName.trim() || undefined,
-              lastName: form.lastName.trim() || undefined,
-              isActive: form.isActive,
-              roleIds: form.roleIds
+        if (!isEditing.value) {
+          // 创建新用户
+          userData.password = form.password
+          
+          const result = await createUserMutation({
+            input: userData
+          }, {
+            context: {
+              headers: {
+                Authorization: `Bearer ${authStore.getAuthToken()}`
+              }
             }
           })
 
           if (result.data?.createUser) {
             emit('saved', result.data.createUser)
+            emit('close')
+          }
+        } else {
+          // 更新现有用户
+          const result = await updateUserMutation({
+            id: props.user.id,
+            input: userData
+          }, {
+            context: {
+              headers: {
+                Authorization: `Bearer ${authStore.getAuthToken()}`
+              }
+            }
+          })
+
+          if (result.data?.updateUser) {
+            // 更新角色关联
+            const updatedUser = { ...result.data.updateUser }
+            updatedUser.roles = roles.value.filter(role => 
+              form.roleIds.includes(role.id)
+            )
+            
+            emit('saved', updatedUser)
+            emit('close')
           }
         }
       } catch (err) {
-        console.error(`${isEditing.value ? '更新' : '创建'}用户失败:`, err)
-        // 错误处理由Apollo的onError回调统一处理，避免重复提示
+        console.error('保存用户失败:', err)
+        errors.general = '保存用户失败，请稍后重试'
       }
     }
 
-    // 创建成功的回调
-    onCreateDone((result) => {
-      if (result.data?.createUser) {
-        emit('saved', result.data.createUser)
-      }
-    })
-
-    // 创建失败的回调
-    onCreateError((error) => {
-      console.error('创建用户失败:', error)
-      alert('创建用户失败: ' + (error.message || '未知错误'))
-    })
-
-    // 更新成功的回调
-    onUpdateDone((result) => {
-      if (result.data?.updateUser) {
-        emit('saved', result.data.updateUser)
-      }
-    })
-
-    // 更新失败的回调
-    onUpdateError((error) => {
-      console.error('更新用户失败:', error)
-      alert('更新用户失败: ' + (error.message || '未知错误'))
-    })
+    // 关闭模态框
+    const closeModal = () => {
+      emit('close')
+    }
 
     return {
-      isEditing,
       form,
       errors,
-      loading,
+      isEditing,
       roles,
       rolesLoading,
-      rolesError,
-      handleSubmit
+      rolesError: computed(() => rolesError.value?.message || null),
+      createLoading,
+      updateLoading,
+      createError: computed(() => createError.value?.message || null),
+      updateError: computed(() => updateError.value?.message || null),
+      saveUser,
+      closeModal
     }
   }
 }
 </script>
+
+<style scoped>
+/* 所有样式已通过Tailwind CSS类实现 */
+</style>
