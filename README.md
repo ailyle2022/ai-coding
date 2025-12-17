@@ -2,11 +2,6 @@
 
 这是一个空的新项目。本 README 文件将用于记录所有项目需求和变更。
 
-## 项目信息
-
-- 项目名称：Admin Gateway System
-- 创建日期：2025年
-- 开发环境：前端Vue3, 后端NestJS, 数据库PostgreSQL, 缓存Redis
 
 ## 目录结构
 
