@@ -8,7 +8,6 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
 
-    console.log('test')
     // 检查是否为GraphQL请求
     if (req.path === '/graphql') {
       // 对于GraphQL请求，我们需要检查body中的操作类型
