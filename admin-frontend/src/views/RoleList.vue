@@ -17,7 +17,7 @@
     />
 
     <div class="flex justify-between items-center mb-6">
-      <div class="text-gray-400 font-medium text-sm">共 {{ roles?.length || 0 }} 个角色</div>
+      <div class="text-gray-400 font-medium text-sm">{{ $t('roles.roleList') }} ({{ roles?.length || 0 }})</div>
       <div class="flex space-x-3">
         <div class="relative">
           <input

@@ -17,7 +17,7 @@
     />
 
     <div class="flex justify-between items-center mb-6">
-      <div class="text-gray-400 font-medium text-sm">共 {{ productStyles?.length || 0 }} 个产品样式</div>
+      <div class="text-gray-400 font-medium text-sm">{{ $t('productStyles.productStyleList') }} ({{ productStyles?.length || 0 }})</div>
       <div class="flex space-x-3">
         <div class="relative">
           <input
