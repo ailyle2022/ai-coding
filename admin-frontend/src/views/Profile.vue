@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { useQuery, useApolloClient, useMutation } from '@vue/apollo-composable'
@@ -165,29 +165,39 @@ export default {
       }
     `
     
+    // 使用useQuery获取当前用户信息
+    const { result: currentUserResult, loading: currentUserLoading, error: currentUserError, refetch: refetchCurrentUser } = useQuery(GET_CURRENT_USER)
+    
+    // 监听查询结果变化
+    watch(currentUserResult, (data) => {
+      if (data && data.getCurrentUser) {
+        currentUser.value = data.getCurrentUser
+      }
+    })
+    
+    // 监听加载状态
+    watch(currentUserLoading, (loading) => {
+      loadingUser.value = loading
+    })
+    
+    // 监听错误
+    watch(currentUserError, (error) => {
+      if (error) {
+        userError.value = error.message || t('profile.loadUserInfoFailed')
+        console.error(t('profile.loadUserInfoFailed'), error)
+      }
+    })
+    
     const { mutate: changePasswordMutate } = useMutation(CHANGE_PASSWORD)
     
     // 获取当前用户信息
     const loadCurrentUser = async () => {
       try {
-        loadingUser.value = true
         userError.value = null
-        
-        // 通过GraphQL查询获取当前用户信息
-        const result = await client.query({
-          query: GET_CURRENT_USER
-        })
-        
-        if (result.data.getCurrentUser) {
-          currentUser.value = result.data.getCurrentUser
-        } else {
-          throw new Error(t('profile.userNotFound'))
-        }
+        await refetchCurrentUser()
       } catch (err) {
         userError.value = err.message || t('profile.loadUserInfoFailed')
         console.error(t('profile.loadUserInfoFailed'), err)
-      } finally {
-        loadingUser.value = false
       }
     }
     
@@ -252,11 +262,6 @@ export default {
       // 跳转到登录页
       router.push('/login')
     }
-    
-    // 组件挂载时加载用户信息
-    onMounted(() => {
-      loadCurrentUser()
-    })
     
     return {
       passwordForm,
