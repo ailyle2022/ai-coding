@@ -160,10 +160,14 @@ export default {
     `
 
     // 使用Apollo查询产品样式列表
-    const { result, loading, error, refetch } = useQuery(PRODUCT_STYLES_QUERY)
+    const { result, loading, error, refetch } = useQuery(PRODUCT_STYLES_QUERY, null, {
+      errorPolicy: 'all'
+    })
 
     // 使用Apollo删除产品样式
-    const { mutate: deleteProductStyleMutation, onDone: onDeleteDone, onError: onDeleteError } = useMutation(DELETE_PRODUCT_STYLE_MUTATION)
+    const { mutate: deleteProductStyleMutation, onDone: onDeleteDone } = useMutation(DELETE_PRODUCT_STYLE_MUTATION, {
+      errorPolicy: 'all'
+    })
 
     // 产品样式数据
     const productStyles = computed(() => {
@@ -183,6 +187,10 @@ export default {
     // 错误信息
     const errorMessage = computed(() => {
       if (error.value) {
+        // 检查是否是连接错误
+        if (error.value.message && error.value.message.includes('UNAVAILABLE') && error.value.message.includes('ECONNREFUSED')) {
+          return '无法连接到后端服务，请检查服务是否正在运行'
+        }
         return '获取产品样式列表失败: ' + (error.value.message || '未知错误')
       }
       return null
@@ -215,42 +223,24 @@ export default {
     const deleteProductStyle = async (productStyle) => {
       if (confirm(`确定要删除产品样式 ${productStyle.name} 吗？`)) {
         try {
-          const result = await deleteProductStyleMutation({
+          await deleteProductStyleMutation({
             id: productStyle.id
           })
-
-          if (result.data?.deleteProductStyle) {
-            // 删除成功，刷新列表
-            refetch()
-          }
+          // 成功删除后刷新列表
+          refetch()
         } catch (err) {
+          // 错误已经在onError中处理，这里只需要确保不会因为异常中断程序执行
           console.error('删除产品样式失败:', err)
-          // 错误处理由Apollo的onError回调统一处理，避免重复提示
         }
       }
     }
 
     // 删除成功的回调
-    onDeleteDone(() => {
-      // 可以在这里添加额外的成功处理逻辑
-    })
-
-    // 删除失败的回调
-    onDeleteError((error) => {
-      console.error('删除产品样式失败:', error)
-
-      // 解析错误信息
-      let message = '删除产品样式失败'
-      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-        message = error.graphQLErrors[0].message
-      } else if (error.networkError) {
-        message = '网络错误，请检查连接后重试'
-      } else if (error.message) {
-        message = error.message
+    onDeleteDone((result) => {
+      if (result.data?.deleteProductStyle) {
+        // 删除成功，刷新列表
+        refetch()
       }
-
-      // 显示友好的错误提示
-      alert(message)
     })
 
     // 页面激活时刷新数据
