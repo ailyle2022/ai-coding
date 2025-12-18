@@ -18,6 +18,7 @@ export const commonTypeDefs = gql`
     firstName: String
     lastName: String
     isActive: Boolean!
+    mfaEnabled: Boolean
     createdAt: String!
     updatedAt: String!
     roles: [Role!]

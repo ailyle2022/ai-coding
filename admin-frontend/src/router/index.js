@@ -37,6 +37,12 @@ const routes = [
     name: 'MFASetup',
     component: () => import('../views/MFASetup.vue'),
     meta: { layout: 'without-sidebar' }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Profile.vue'),
+    meta: { layout: 'with-sidebar' }
   }
 ]
 

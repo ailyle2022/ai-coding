@@ -70,19 +70,6 @@
             <span class="font-medium">{{ $t('sidebar.logs') }}</span>
           </a>
         </li>
-        <!-- MFA 设置 -->
-        <li>
-          <router-link
-            to="/mfa-setup"
-            class="nav-link flex items-center p-3 rounded-xl transition duration-150 ease-in-out mt-1 text-sm"
-            :class="{'bg-secondary-bg text-primary-accent font-semibold': $route.path === '/mfa-setup', 'text-gray-500 hover:bg-gray-100': $route.path !== '/mfa-setup'}"
-          >
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-            </svg>
-            <span class="font-medium">{{ $t('sidebar.mfaSetup') }}</span>
-          </router-link>
-        </li>
       </ul>
     </div>
 
@@ -100,11 +87,13 @@
         </select>
       </div>
       
-      <!-- 原有的用户/版本信息 -->
+      <!-- 用户信息 -->
       <div class="flex items-center text-sm text-gray-500 mt-4 pt-4 border-t border-gray-100">
         <div class="w-8 h-8 bg-gray-200 rounded-full mr-3"></div>
         <div>
-          <p class="font-semibold text-gray-700">{{ $t('sidebar.admin') }}</p>
+          <router-link to="/profile" class="font-semibold text-gray-700 hover:text-primary-accent transition-colors duration-200">
+            {{ currentUser.username || $t('sidebar.admin') }}
+          </router-link>
           <p class="text-xs">Version 1.0</p>
         </div>
       </div>
@@ -115,10 +104,30 @@
 <script>
 export default {
   name: 'Sidebar',
+  data() {
+    return {
+      currentUser: {}
+    }
+  },
+  created() {
+    this.loadCurrentUser()
+  },
   methods: {
     changeLanguage(event) {
       const newLocale = event.target.value
       localStorage.setItem('locale', newLocale)
+    },
+    loadCurrentUser() {
+      try {
+        const userStr = localStorage.getItem('user')
+        if (userStr) {
+          this.currentUser = JSON.parse(userStr)
+        } else {
+          this.currentUser = { username: this.$t('sidebar.admin') }
+        }
+      } catch (e) {
+        this.currentUser = { username: this.$t('sidebar.admin') }
+      }
     }
   }
 }

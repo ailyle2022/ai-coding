@@ -254,8 +254,8 @@ export default {
     }
     
     const finishSetup = () => {
-      // Redirect to home page after successful MFA setup
-      router.push('/')
+      // Redirect to profile page after successful MFA setup
+      router.push('/profile')
     }
     
     return {

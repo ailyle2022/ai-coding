@@ -41,15 +41,6 @@
         </ul>
       </div>
     </div>
-
-    <div class="flex justify-end">
-      <button
-        @click="logout"
-        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition duration-150"
-      >
-        退出登录
-      </button>
-    </div>
   </div>
 </template>
 
