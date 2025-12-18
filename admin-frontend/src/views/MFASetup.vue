@@ -213,7 +213,10 @@ export default {
     }
     
     const prevStep = () => {
-      if (step.value === 2 && mfaSetup.value) {
+      if (step.value === 1) {
+        // 在第一步时，返回到配置页面
+        router.push('/profile')
+      } else if (step.value === 2 && mfaSetup.value) {
         step.value = 1
       } else if (step.value > 1) {
         step.value--
