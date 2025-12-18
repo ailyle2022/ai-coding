@@ -90,5 +90,17 @@ export default {
     successMessage: 'MFA 设置成功！',
     finish: '完成',
     setupMFAInstruction: '请使用 Google Authenticator 等 MFA 应用程序，并使用下面的密钥进行设置。'
+  },
+  profile: {
+    title: '个人资料',
+    changePassword: '修改密码',
+    currentPassword: '当前密码',
+    newPassword: '新密码',
+    confirmPassword: '确认密码',
+    changePasswordButton: '修改密码',
+    changingPassword: '修改密码中...',
+    mfaSettings: 'MFA 设置',
+    mfaEnabled: '已启用 MFA',
+    mfaDisabled: '未启用 MFA',
   }
 }

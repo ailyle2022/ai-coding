@@ -90,5 +90,17 @@ export default {
     successMessage: 'MFA setup successful!',
     finish: 'Finish',
     setupMFAInstruction: 'Please use a Google Authenticator or similar MFA app to scan the QR code above. If you have trouble scanning the code, you can also enter the secret manually.'
+  },
+  profile: {
+    title: 'Profile',
+    changePassword: 'Change Password',
+    currentPassword: 'Current Password',
+    newPassword: 'New Password',
+    confirmPassword: 'Confirm Password',
+    changePasswordButton: 'Change Password',
+    changingPassword: 'Changing Password...',
+    mfaSettings: 'MFA Settings',
+    mfaEnabled: 'MFA Enabled',
+    mfaDisabled: 'MFA Disabled',
   }
 }
