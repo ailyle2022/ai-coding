@@ -106,8 +106,10 @@ export default {
     configureMFA: 'Configure MFA',
     logoutSection: 'Logout',
     logoutDescription: 'Are you sure you want to logout?',
+    logoutButton: 'Logout',
     currentPasswordPlaceholder: 'Enter current password',
     newPasswordPlaceholder: 'Enter new password',
-    confirmPasswordPlaceholder: 'Enter confirm password'
+    confirmPasswordPlaceholder: 'Enter confirm password',
+    
   }
 }

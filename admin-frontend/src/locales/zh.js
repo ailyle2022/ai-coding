@@ -104,10 +104,12 @@ export default {
     mfaDisabled: '未启用 MFA',
     reconfigureMFA: '重新配置 MFA',
     configureMFA: '配置 MFA',
-    logoutSection: '注销',
-    logoutDescription: '确定要注销吗？',
+    logoutSection: '登出',
+    logoutDescription: '确定要登出吗？',
+    logoutButton: '登出',
     currentPasswordPlaceholder: '输入当前密码',
     newPasswordPlaceholder: '输入新密码',
-    confirmPasswordPlaceholder: '输入确认密码'
+    confirmPasswordPlaceholder: '输入确认密码',
+    
   }
 }
