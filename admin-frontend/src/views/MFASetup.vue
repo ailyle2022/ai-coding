@@ -257,8 +257,13 @@ export default {
     }
     
     const finishSetup = () => {
-      // Redirect to profile page after successful MFA setup
-      router.push('/profile')
+      // Redirect to profile page after successful MFA setup and refresh
+      router.push('/profile').then(() => {
+        // 使用setTimeout确保路由切换完成后再刷新页面
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      });
     }
     
     return {
