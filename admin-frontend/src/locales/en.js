@@ -102,5 +102,10 @@ export default {
     mfaSettings: 'MFA Settings',
     mfaEnabled: 'MFA Enabled',
     mfaDisabled: 'MFA Disabled',
+    logoutSection: 'Logout',
+    logoutDescription: 'Are you sure you want to logout?',
+    currentPasswordPlaceholder: 'Enter current password',
+    newPasswordPlaceholder: 'Enter new password',
+    confirmPasswordPlaceholder: 'Enter confirm password'
   }
 }
