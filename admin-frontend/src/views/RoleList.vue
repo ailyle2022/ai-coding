@@ -34,7 +34,7 @@
           @click="addRole"
           class="bg-primary-accent hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition duration-150 shadow-md text-sm"
         >
-          + 新增角色
+          + {{$t('roles.addRole')}}
         </button>
       </div>
     </div>
