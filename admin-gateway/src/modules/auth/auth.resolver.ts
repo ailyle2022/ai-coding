@@ -1,17 +1,12 @@
-import { Resolver, Mutation, Args, Query, Int } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query, Int, Context } from '@nestjs/graphql';
 import { AuthService, LoginInput, MFAVerifyInput } from './auth.service';
-import { UserService } from '../user/user.service';
-import { RoleService, CreateRoleInput } from '../role/role.service';
 import { AuthPayload, ChangePasswordPayload } from './auth.payload';
 import { User } from '../user/user.entity';
-import { Role } from '../role/role.entity';
 
 @Resolver()
 export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
-    private readonly userService: UserService,
-    private readonly roleService: RoleService,
   ) {}
 
   @Mutation(() => AuthPayload)
@@ -27,8 +22,11 @@ export class AuthResolver {
   @Mutation(() => ChangePasswordPayload)
   async changePassword(
     @Args('currentPassword') currentPassword: string,
-    @Args('newPassword') newPassword: string
+    @Args('newPassword') newPassword: string,
+    @Context() context: any,
   ): Promise<{isSuccess: boolean, message: string}> {
+    // 将上下文注入到authService中
+    Object.defineProperty(this.authService, 'context', {value: context, writable: true});
     return this.authService.changePassword(currentPassword, newPassword);
   }
 
@@ -53,23 +51,11 @@ export class AuthResolver {
     return this.authService.confirmMFA(mfaVerifyInput);
   }
 
-  @Query(() => [User])
-  async users(): Promise<User[]> {
-    return this.userService.findAll();
-  }
-
   @Query(() => User, { nullable: true })
-  async user(@Args('id', { type: () => Int }) id: number): Promise<User> {
-    return this.userService.findById(id);
+  async getCurrentUser(@Context() context: any): Promise<User | undefined> {
+    // 将上下文注入到authService中
+    Object.defineProperty(this.authService, 'context', {value: context, writable: true});
+    return this.authService.getCurrentUser();
   }
 
-  @Query(() => [Role])
-  async roles(): Promise<Role[]> {
-    return this.roleService.findAll();
-  }
-
-  @Mutation(() => Role)
-  async createRole(@Args('input') input: CreateRoleInput): Promise<Role> {
-    return this.roleService.create(input);
-  }
 }

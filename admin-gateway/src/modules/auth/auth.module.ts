@@ -41,6 +41,7 @@ import { AuthMiddleware } from './auth.middleware';
       ),
       playground: true,
       introspection: true,
+      context: ({ req }) => ({ req }),
     }),
     TypeOrmModule.forFeature([]), // 这里应该包含实体，但现在是空的
   ],
