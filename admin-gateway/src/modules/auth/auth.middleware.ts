@@ -7,6 +7,8 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly authService: AuthService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
+
+    console.log('test')
     // 检查是否为GraphQL请求
     if (req.path === '/graphql') {
       // 对于GraphQL请求，我们需要检查body中的操作类型
@@ -18,11 +20,8 @@ export class AuthMiddleware implements NestMiddleware {
         const isLoginOperation = body.query.includes('login');
         const isVerifyMFA = body.query.includes('verifyMFA');
         
-        // 检查是否是GraphQL内省查询
-        const isIntrospection = body.query.includes('__schema') || body.query.includes('__type');
-
         // 如果是登录操作、获取当前用户信息或内省查询，则跳过认证
-        if (isLoginOperation || isVerifyMFA || isIntrospection) {
+        if (isLoginOperation || isVerifyMFA) {
           return next();
         }
       }
