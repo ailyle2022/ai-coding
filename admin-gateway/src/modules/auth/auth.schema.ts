@@ -48,39 +48,3 @@ export const authTypeDefs = gql`
     confirmMFA(input: MFAVerifyInput!): AuthPayload!
   }
 `;
-
-export const typeDefs = gql`
-  type User {
-    id: Int!
-    username: String!
-    email: String
-    firstName: String
-    lastName: String
-    isActive: Boolean!
-    mfaEnabled: Boolean
-    createdAt: String!
-    updatedAt: String!
-  }
-
-  type Role {
-    id: Int!
-    name: String!
-    description: String
-    createdAt: String!
-  }
-
-  input CreateRoleInput {
-    name: String!
-    description: String
-  }
-
-  type Query {
-    users: [User!]!
-    user(id: Int!): User
-    roles: [Role!]!
-  }
-
-  type Mutation {
-    createRole(input: CreateRoleInput!): Role!
-  }
-`;
