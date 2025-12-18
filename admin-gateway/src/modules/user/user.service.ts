@@ -22,6 +22,7 @@ export interface CreateUserInput {
 
 export interface UpdateUserInput {
   username?: string;
+  password?: string; // 添加可选密码字段
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -178,6 +179,11 @@ export class UserService {
         );
       }
       user.email = input.email;
+    }
+
+    // 更新密码（如果提供了新密码）
+    if (input.password) {
+      user.passwordHash = await this.passwordService.hashPassword(input.password);
     }
 
     // 更新其他字段

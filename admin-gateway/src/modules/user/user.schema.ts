@@ -11,4 +11,24 @@ export const userTypeDefs = gql`
     updateUser(id: Int!, input: UpdateUserInput): User
     deleteUser(id: Int!): Boolean!
   }
+
+  input CreateUserInput {
+    username: String!
+    password: String!
+    email: String
+    firstName: String
+    lastName: String
+    isActive: Boolean
+    roleIds: [Int!]
+  }
+
+  input UpdateUserInput {
+    username: String
+    password: String
+    email: String
+    firstName: String
+    lastName: String
+    isActive: Boolean
+    roleIds: [Int!]
+  }
 `;
