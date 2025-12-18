@@ -68,6 +68,8 @@ export default {
     deleteProductStyle: 'Delete Product Style',
     name: 'Name',
     description: 'Description',
+    namePlaceholder: 'Enter name',
+    descriptionPlaceholder: 'Enter description'
   },
   dashboard: {
     recentActivity: 'Recent Activity',

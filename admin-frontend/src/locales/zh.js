@@ -68,6 +68,8 @@ export default {
     deleteProductStyle: '删除产品样式',
     name: '名称',
     description: '描述',
+    namePlaceholder: '输入名称',
+    descriptionPlaceholder: '输入描述',
   },
   dashboard: {
     recentActivity: '最近活动',

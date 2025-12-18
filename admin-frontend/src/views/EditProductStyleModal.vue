@@ -28,7 +28,7 @@
                     v-model="form.name"
                     :disabled="isEditing"
                     :class="{'border-red-500': errors.name, 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-accent focus:border-primary-accent': true}"
-                    placeholder="请输入产品样式名称"
+                    :placeholder="$t('productStyles.namePlaceholder')"
                   >
                   <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
                 </div>
@@ -42,7 +42,7 @@
                     v-model="form.description"
                     rows="3"
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-primary-accent focus:border-primary-accent"
-                    placeholder="请输入产品样式描述"
+                    :placeholder="$t('productStyles.descriptionPlaceholder')"
                   ></textarea>
                   <p v-if="errors.description" class="mt-1 text-sm text-red-600">{{ errors.description }}</p>
                 </div>
