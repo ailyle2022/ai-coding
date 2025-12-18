@@ -6,7 +6,11 @@
     <div v-else class="flex h-full">
       <Sidebar />
       <main class="flex-grow p-8 custom-scrollbar overflow-y-auto bg-gray-50">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </router-view>
       </main>
     </div>
   </div>

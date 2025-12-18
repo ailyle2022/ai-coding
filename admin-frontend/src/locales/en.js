@@ -105,6 +105,7 @@ export default {
     mfaSettings: 'MFA Settings',
     mfaEnabled: 'MFA Enabled',
     mfaDisabled: 'MFA Disabled',
+    loadingUserInfo:'Loading user info...',
     reconfigureMFA: 'Reconfigure MFA',
     configureMFA: 'Configure MFA',
     logoutSection: 'Logout',

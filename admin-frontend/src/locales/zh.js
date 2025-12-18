@@ -107,6 +107,7 @@ export default {
     mfaDisabled: '未启用 MFA',
     reconfigureMFA: '重新配置 MFA',
     configureMFA: '配置 MFA',
+    loadingUserInfo:'加载用户信息...',
     logoutSection: '登出',
     logoutDescription: '确定要登出吗？',
     logoutButton: '登出',

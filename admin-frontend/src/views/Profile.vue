@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onActivated } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { useQuery, useApolloClient, useMutation } from '@vue/apollo-composable'
@@ -188,15 +188,29 @@ export default {
       }
     })
     
+    // 当组件被激活时（例如通过路由切换回来），重新获取用户信息
+    onActivated(() => {
+      // 使用nextTick确保DOM更新后再执行刷新
+      setTimeout(() => {
+        loadCurrentUser()
+      }, 0)
+    })
+    
     const { mutate: changePasswordMutate } = useMutation(CHANGE_PASSWORD)
     
     // 获取当前用户信息
     const loadCurrentUser = async () => {
       try {
         userError.value = null
-        await refetchCurrentUser()
+        const result = await refetchCurrentUser()
+        // 确保结果被正确处理
+        if (result.data && result.data.getCurrentUser) {
+          currentUser.value = result.data.getCurrentUser
+          loadingUser.value = false
+        }
       } catch (err) {
         userError.value = err.message || t('profile.loadUserInfoFailed')
+        loadingUser.value = false
         console.error(t('profile.loadUserInfoFailed'), err)
       }
     }
