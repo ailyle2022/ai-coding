@@ -231,7 +231,6 @@ export class AuthService {
   }
 
   async getCurrentUser(): Promise<User | undefined> {
-    console.log(this.context)
     // 从GraphQL上下文中获取当前用户ID
     const userId = this.context.req?.userId || (this.context.req?.user && this.context.req.user.userId);
     if (!userId) {
