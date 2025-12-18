@@ -2,7 +2,7 @@ import { Resolver, Mutation, Args, Query, Int } from '@nestjs/graphql';
 import { AuthService, LoginInput, MFAVerifyInput } from './auth.service';
 import { UserService } from '../user/user.service';
 import { RoleService, CreateRoleInput } from '../role/role.service';
-import { AuthPayload } from './auth.payload';
+import { AuthPayload, ChangePasswordPayload } from './auth.payload';
 import { User } from '../user/user.entity';
 import { Role } from '../role/role.entity';
 
@@ -22,6 +22,14 @@ export class AuthResolver {
   @Mutation(() => AuthPayload)
   async verifyMFA(@Args('input') mfaVerifyInput: MFAVerifyInput): Promise<AuthPayload> {
     return this.authService.verifyMFA(mfaVerifyInput);
+  }
+
+  @Mutation(() => ChangePasswordPayload)
+  async changePassword(
+    @Args('currentPassword') currentPassword: string,
+    @Args('newPassword') newPassword: string
+  ): Promise<{isSuccess: boolean, message: string}> {
+    return this.authService.changePassword(currentPassword, newPassword);
   }
 
   @Mutation(() => Object)

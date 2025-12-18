@@ -26,3 +26,12 @@ export class AuthPayload {
   @Field({ nullable: true })
   mfaChallengeId: string;
 }
+
+@ObjectType()
+export class ChangePasswordPayload {
+  @Field()
+  isSuccess: boolean;
+
+  @Field({ nullable: true })
+  message: string;
+}

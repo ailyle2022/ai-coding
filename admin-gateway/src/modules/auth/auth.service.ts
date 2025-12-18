@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthPayload, AuthUser } from './auth.payload';
@@ -8,6 +8,8 @@ import { CacheService } from '../common/cache.service';
 import { RabbitMQService } from '../common/rabbitmq.service';
 import * as crypto from 'crypto';
 import * as speakeasy from 'speakeasy';
+import { CONTEXT } from '@nestjs/graphql';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 export interface LoginInput {
   username: string;
@@ -27,6 +29,7 @@ export class AuthService {
     private readonly passwordService: PasswordService,
     private readonly cacheService: CacheService,
     private readonly rabbitMQService: RabbitMQService,
+    @Inject(CONTEXT) private context: any,
   ) {}
 
   async login(loginInput: LoginInput): Promise<AuthPayload> {
@@ -171,6 +174,74 @@ export class AuthService {
       authPayload.message = 'Internal server error';
       return authPayload;
     }
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<{isSuccess: boolean, message: string}> {
+    try {
+      // 检查context对象是否存在
+      if (!this.context) {
+        return {
+          isSuccess: false,
+          message: 'GraphQL context not available'
+        };
+      }
+
+      // 从GraphQL上下文中获取当前用户ID
+      const userId = this.context.req?.userId || (this.context.req?.user && this.context.req.user.userId);
+      if (!userId) {
+        return {
+          isSuccess: false,
+          message: 'User not authenticated'
+        };
+      }
+
+      // 查找用户
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      if (!user) {
+        return {
+          isSuccess: false,
+          message: 'User not found'
+        };
+      }
+
+      // 验证当前密码
+      const isValid = await this.passwordService.comparePassword(currentPassword, user.passwordHash);
+      if (!isValid) {
+        return {
+          isSuccess: false,
+          message: 'Current password is incorrect'
+        };
+      }
+
+      // 更新密码
+      user.passwordHash = await this.passwordService.hashPassword(newPassword);
+      await this.userRepository.save(user);
+
+      return {
+        isSuccess: true,
+        message: 'Password changed successfully'
+      };
+    } catch (error) {
+      // 发生任何错误都返回false
+      return {
+        isSuccess: false,
+        message: 'An error occurred while changing password: ' + error.message
+      };
+    }
+  }
+
+  async getCurrentUser(): Promise<User | undefined> {
+    // 从GraphQL上下文中获取当前用户ID
+    const userId = this.context.req?.userId || (this.context.req?.user && this.context.req.user.userId);
+    if (!userId) {
+      return undefined;
+    }
+
+    // 查找用户
+    return await this.userRepository.findOne({ 
+      where: { id: userId },
+      relations: ['roles']
+    });
   }
 
   private generateToken(user: User): string {

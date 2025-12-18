@@ -139,9 +139,9 @@ export default {
     const userError = ref(null)
     
     // GraphQL查询用户信息
-    const GET_USER_BY_ID = gql`
-      query GetUser($id: Int!) {
-        user(id: $id) {
+    const GET_CURRENT_USER = gql`
+      query GetCurrentUser {
+        getCurrentUser {
           id
           username
           email
@@ -158,7 +158,10 @@ export default {
     // GraphQL修改密码mutation
     const CHANGE_PASSWORD = gql`
       mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
-        changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+        changePassword(currentPassword: $currentPassword, newPassword: $newPassword) {
+          isSuccess
+          message
+        }
       }
     `
     
@@ -170,24 +173,13 @@ export default {
         loadingUser.value = true
         userError.value = null
         
-        // 从localStorage获取当前用户ID
-        const storedUser = JSON.parse(localStorage.getItem('user') || '{}')
-        const currentUserId = storedUser.id
-        
-        if (!currentUserId) {
-          throw new Error(t('profile.loadUserInfoFailed'))
-        }
-        
-        // 通过ID查询用户信息
+        // 通过GraphQL查询获取当前用户信息
         const result = await client.query({
-          query: GET_USER_BY_ID,
-          variables: {
-            id: currentUserId
-          }
+          query: GET_CURRENT_USER
         })
         
-        if (result.data.user) {
-          currentUser.value = result.data.user
+        if (result.data.getCurrentUser) {
+          currentUser.value = result.data.getCurrentUser
         } else {
           throw new Error(t('profile.userNotFound'))
         }
@@ -224,7 +216,8 @@ export default {
           newPassword: passwordForm.newPassword
         })
         
-        if (result.data.changePassword) {
+        // 根据新的响应格式处理结果
+        if (result.data.changePassword.isSuccess) {
           changingPassword.value = false
           passwordMessage.value = t('profile.passwordChangedSuccess')
           passwordError.value = false
@@ -233,6 +226,11 @@ export default {
           passwordForm.currentPassword = ''
           passwordForm.newPassword = ''
           passwordForm.confirmPassword = ''
+        } else {
+          // 处理失败情况
+          changingPassword.value = false
+          passwordMessage.value = result.data.changePassword.message
+          passwordError.value = true
         }
       } catch (err) {
         changingPassword.value = false
