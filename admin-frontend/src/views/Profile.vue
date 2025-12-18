@@ -136,10 +136,10 @@ export default {
     const loadingUser = ref(true)
     const userError = ref(null)
     
-    // GraphQL查询当前用户信息
-    const GET_CURRENT_USER = gql`
-      query GetCurrentUser {
-        users {
+    // GraphQL查询用户信息
+    const GET_USER_BY_ID = gql`
+      query GetUser($id: Int!) {
+        user(id: $id) {
           id
           username
           email
@@ -167,17 +167,16 @@ export default {
           throw new Error('无法获取当前用户信息')
         }
         
-        // 查询所有用户（在真实应用中应该有专门的currentUser查询）
+        // 通过ID查询用户信息
         const result = await client.query({
-          query: GET_CURRENT_USER
+          query: GET_USER_BY_ID,
+          variables: {
+            id: currentUserId
+          }
         })
         
-        // 找到当前用户
-        const users = result.data.users
-        const user = users.find(u => u.id === currentUserId)
-        
-        if (user) {
-          currentUser.value = user
+        if (result.data.user) {
+          currentUser.value = result.data.user
         } else {
           throw new Error('找不到当前用户')
         }

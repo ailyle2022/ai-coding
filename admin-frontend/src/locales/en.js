@@ -102,6 +102,8 @@ export default {
     mfaSettings: 'MFA Settings',
     mfaEnabled: 'MFA Enabled',
     mfaDisabled: 'MFA Disabled',
+    reconfigureMFA: 'Reconfigure MFA',
+    configureMFA: 'Configure MFA',
     logoutSection: 'Logout',
     logoutDescription: 'Are you sure you want to logout?',
     currentPasswordPlaceholder: 'Enter current password',

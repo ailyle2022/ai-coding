@@ -52,6 +52,7 @@ export class UserService {
         'firstName',
         'lastName',
         'isActive',
+        'mfaEnabled', // 添加mfaEnabled字段
         'createdAt',
         'updatedAt',
       ],
@@ -75,6 +76,7 @@ export class UserService {
         'firstName',
         'lastName',
         'isActive',
+        'mfaEnabled', // 添加mfaEnabled字段
         'createdAt',
         'updatedAt',
       ],

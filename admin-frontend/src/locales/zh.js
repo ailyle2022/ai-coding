@@ -102,6 +102,8 @@ export default {
     mfaSettings: 'MFA 设置',
     mfaEnabled: '已启用 MFA',
     mfaDisabled: '未启用 MFA',
+    reconfigureMFA: '重新配置 MFA',
+    configureMFA: '配置 MFA',
     logoutSection: '注销',
     logoutDescription: '确定要注销吗？',
     currentPasswordPlaceholder: '输入当前密码',
