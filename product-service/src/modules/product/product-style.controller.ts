@@ -21,7 +21,7 @@ export class ProductStyleController {
   // gRPC 方法
   @GrpcMethod('ProductStyleService', 'FindAll')
   async grpcFindAll(data: Empty): Promise<iProductStyleList> {
-    this.logger.log('Fetching all product styles');
+    //this.logger.log('Fetching all product styles');
     const productStyles = await this.productStyleService.findAll();
     // 映射实体到 gRPC 响应格式
     const productStylesList = productStyles.map((style) => ({
