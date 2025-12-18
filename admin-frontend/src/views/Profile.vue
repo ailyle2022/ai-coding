@@ -111,7 +111,8 @@
 import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
-import { useQuery, useApolloClient } from '@vue/apollo-composable'
+import { useQuery, useApolloClient, useMutation } from '@vue/apollo-composable'
+import { useI18n } from 'vue-i18n'
 import { gql } from 'graphql-tag'
 
 export default {
@@ -119,6 +120,7 @@ export default {
   setup() {
     const router = useRouter()
     const authStore = useAuthStore()
+    const { t } = useI18n()
     const { client } = useApolloClient()
     
     const passwordForm = reactive({
@@ -153,6 +155,15 @@ export default {
       }
     `
     
+    // GraphQL修改密码mutation
+    const CHANGE_PASSWORD = gql`
+      mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
+        changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+      }
+    `
+    
+    const { mutate: changePasswordMutate } = useMutation(CHANGE_PASSWORD)
+    
     // 获取当前用户信息
     const loadCurrentUser = async () => {
       try {
@@ -164,7 +175,7 @@ export default {
         const currentUserId = storedUser.id
         
         if (!currentUserId) {
-          throw new Error('无法获取当前用户信息')
+          throw new Error(t('profile.loadUserInfoFailed'))
         }
         
         // 通过ID查询用户信息
@@ -178,11 +189,11 @@ export default {
         if (result.data.user) {
           currentUser.value = result.data.user
         } else {
-          throw new Error('找不到当前用户')
+          throw new Error(t('profile.userNotFound'))
         }
       } catch (err) {
-        userError.value = err.message || '获取用户信息失败'
-        console.error('获取用户信息失败:', err)
+        userError.value = err.message || t('profile.loadUserInfoFailed')
+        console.error(t('profile.loadUserInfoFailed'), err)
       } finally {
         loadingUser.value = false
       }
@@ -191,13 +202,13 @@ export default {
     const handleChangePassword = async () => {
       // 简单的表单验证
       if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-        passwordMessage.value = $t('profile.passwordMismatch')
+        passwordMessage.value = t('profile.passwordMismatch')
         passwordError.value = true
         return
       }
       
       if (passwordForm.newPassword.length < 6) {
-        passwordMessage.value = $t('profile.passwordTooShort')
+        passwordMessage.value = t('profile.passwordTooShort')
         passwordError.value = true
         return
       }
@@ -206,18 +217,29 @@ export default {
       passwordMessage.value = ''
       passwordError.value = false
       
-      // 这里应该调用实际的更改密码API
-      // 模拟API调用
-      setTimeout(() => {
-        changingPassword.value = false
-        passwordMessage.value = $t('profile.passwordChangedSuccess')
-        passwordError.value = false
+      try {
+        // 调用修改密码mutation
+        const result = await changePasswordMutate({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
         
-        // 清空表单
-        passwordForm.currentPassword = ''
-        passwordForm.newPassword = ''
-        passwordForm.confirmPassword = ''
-      }, 1000)
+        if (result.data.changePassword) {
+          changingPassword.value = false
+          passwordMessage.value = t('profile.passwordChangedSuccess')
+          passwordError.value = false
+          
+          // 清空表单
+          passwordForm.currentPassword = ''
+          passwordForm.newPassword = ''
+          passwordForm.confirmPassword = ''
+        }
+      } catch (err) {
+        changingPassword.value = false
+        passwordMessage.value = err.message || t('profile.passwordChangeFailed')
+        passwordError.value = true
+        console.error(t('profile.passwordChangeFailed'), err)
+      }
     }
     
     const goToMFASetup = () => {
@@ -249,7 +271,8 @@ export default {
       handleChangePassword,
       goToMFASetup,
       handleLogout,
-      loadCurrentUser
+      loadCurrentUser,
+      t
     }
   }
 }
