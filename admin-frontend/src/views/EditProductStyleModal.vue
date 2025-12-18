@@ -58,6 +58,22 @@
                     {{$t('common.status')}}
                   </label>
                 </div>
+                
+                <!-- 错误信息展示区域 -->
+                <div v-if="mutationError" class="rounded-md bg-red-50 p-4">
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="ml-3">
+                      <h3 class="text-sm font-medium text-red-800">
+                        {{ mutationError }}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -116,11 +132,15 @@ export default {
       name: '',
       description: ''
     })
+    
+    // 变更操作错误信息
+    const mutationError = ref('')
 
     // 清除错误信息
     const clearErrors = () => {
       errors.name = ''
       errors.description = ''
+      mutationError.value = ''
     }
 
     // 初始化表单数据
@@ -233,17 +253,20 @@ export default {
       console.error('创建产品样式失败:', error)
       
       // 解析错误信息
-      let message = '创建产品样式失败'
       if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-        message = error.graphQLErrors[0].message
+        mutationError.value = error.graphQLErrors[0].message
       } else if (error.networkError) {
-        message = '网络错误，请检查连接后重试'
+        // 检查是否是连接错误
+        if (error.networkError.message && error.networkError.message.includes('UNAVAILABLE') && error.networkError.message.includes('ECONNREFUSED')) {
+          mutationError.value = '无法连接到后端服务，请检查服务是否正在运行'
+        } else {
+          mutationError.value = '网络错误，请检查连接后重试'
+        }
       } else if (error.message) {
-        message = error.message
+        mutationError.value = error.message
+      } else {
+        mutationError.value = '创建产品样式失败'
       }
-
-      // 显示友好的错误提示
-      alert(message)
     })
 
     // 更新成功的回调
@@ -256,23 +279,27 @@ export default {
       console.error('更新产品样式失败:', error)
 
       // 解析错误信息
-      let message = '更新产品样式失败'
       if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-        message = error.graphQLErrors[0].message
+        mutationError.value = error.graphQLErrors[0].message
       } else if (error.networkError) {
-        message = '网络错误，请检查连接后重试'
+        // 检查是否是连接错误
+        if (error.networkError.message && error.networkError.message.includes('UNAVAILABLE') && error.networkError.message.includes('ECONNREFUSED')) {
+          mutationError.value = '无法连接到后端服务，请检查服务是否正在运行'
+        } else {
+          mutationError.value = '网络错误，请检查连接后重试'
+        }
       } else if (error.message) {
-        message = error.message
+        mutationError.value = error.message
+      } else {
+        mutationError.value = '更新产品样式失败'
       }
-
-      // 显示友好的错误提示
-      alert(message)
     })
 
     return {
       isEditing,
       form,
       errors,
+      mutationError,
       loading,
       handleSubmit
     }
